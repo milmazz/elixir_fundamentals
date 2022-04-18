@@ -1,0 +1,188 @@
+# Conceptos básicos
+
+```elixir
+defmodule Demo do
+  def run, do: :ok
+end
+```
+
+## Tipos de datos
+
+Elixir soporta tipos de datos basicos como: enteros, flotantes, booleans, atomos o tambien conocidos como simbolos, cadenas de caracteres, listas, tuplas, entre otros.
+
+```elixir
+# integer
+1
+# integer
+0x1F
+# float
+1.0
+# boolean
+true
+# atom / symbol
+:atom
+# string
+"elixir"
+# list
+[1, 2, 3]
+# tuple
+{1, 2, 3}
+```
+
+## Inmutabilidad
+
+```elixir
+list = [:foo, :bar, :baz]
+```
+
+La mayoría de las estructuras de datos de Erlang, y por consiguiente de Elixir
+
+```elixir
+List.delete_at(list, 1)
+```
+
+```elixir
+list
+```
+
+## Funciones anónimas y de alto nivel
+
+En esta seccion estamos viendo varios conceptos: El primero de ellos es el uso
+de funciones anonimas o lambdas, las funciones anonimas pueden pasarse como
+argumentos a otras funciones, y aca nos aprovechamos de dicha caracteristica
+para crear una funcion de orden superior.
+
+```elixir
+sum = fn n ->
+  fn x -> x + n end
+end
+```
+
+```elixir
+add42 = sum.(42)
+```
+
+```elixir
+add42.(1)
+```
+
+```elixir
+Enum.map([1, 2, 3, 4], fn x ->
+  x * 3
+end)
+```
+
+```elixir
+Enum.map([1, 2, 3, 4], &(&1 * 3))
+```
+
+```elixir
+Enum.map([1, 2, 3, 4], &(&1 * 3))
+```
+
+## Impurezas
+
+```elixir
+IO.puts("Hola mundo!")
+```
+
+```elixir
+Time.utc_now()
+```
+
+```elixir
+Time.utc_now()
+```
+
+## Coincidencia de patrones
+
+`=` no es lo que parece
+
+```elixir
+a = 1
+```
+
+Pattern matching es funcionalidad que existe en muchos lenguajes funcionales, y
+una vez que te acostumbras, es dificil sentirse cómodo en lenguajes que no
+soportan esta característica. Pero veamos de lo que trata.
+
+En Elixir a = 1 no significa que estamos asignando 1 a la variable a.
+
+En realidad lo que indica el signo de igual en este caso es que estamos
+asegurando que el lado izquierdo del operador sea igual al lado derecho. Tal
+cual como aprendimos en algebra.
+
+```elixir
+1 = a
+```
+
+* En Elixir, en vez asignar a una variable, decimos que estamos atando a una variable.
+* A diferencia de Erlang, Elixir permite hacer _rebinding_ a una variable.
+
+```elixir
+a = 1
+a = 2
+```
+
+En realidad internamente Elixir crea nuevos bindings por nosotros, para ser compatible con Erlang.
+
+```elixir
+list = [1, 2, 3, 4]
+[first, second | rest] = list
+```
+
+Podemos coincidencia de patrones con estructuras de datos y vincular (binding)
+con "variables"
+
+La coincidencia de patrones es extremadamente útil para dividir complejas
+estructuras de datos y filtrar las partes que queremos o necesitamos
+
+```elixir
+IO.inspect(first)
+IO.inspect(second)
+IO.inspect(rest)
+```
+
+```elixir
+tupla = {:mi, :tupla, 4, "elementos"}
+{:mi, :tupla, cantidad, "ele" <> resto} = tupla
+```
+
+Podemos hacer coincidir patrones sobre estructuras de datos complejas, así como
+también podemos hacer coincidir sobre valores.
+
+`=` puede usarse como "asignación" porque la "variable" coincidirá con
+cualquier cosa a la que sea asociada.
+
+```elixir
+IO.inspect(cantidad)
+IO.inspect(resto)
+IO.inspect(tuple_size(tupla))
+```
+
+### Ignorando valores
+
+Podemos ignorar valores haciendo uso de `_`
+
+```elixir
+[a, _, _] = [1, 2, 3]
+a
+```
+
+```elixir
+_
+```
+
+### Operador pin (^)
+
+Podemos reusar un valor previamente atado a una variable por medio del operador pin (`^`)
+
+```elixir
+a = 1
+[^a, 2, 3] = [1, 2, 3]
+```
+
+```elixir
+b = 2
+[^b, 2, 3] = [1, 2, 3]
+```
