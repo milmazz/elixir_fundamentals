@@ -1,0 +1,478 @@
+# Tipos básicos - fork
+
+## Tipos básicos
+
+En esta clase aprenderemos que Elixir soporta tipos de datos básicos como: enteros, flotantes, booleanos, átomos o también conocidos como símbolos, cadenas de caracteres, listas, tuplas, entre otros.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> 1          # integer
+iex> 0x1F       # integer
+iex> 1.0        # float
+iex> true       # boolean
+iex> :atom      # atom / symbol
+iex> "elixir"   # string
+iex> [1, 2, 3]  # list
+iex> {1, 2, 3}  # tuple
+```
+
+### Operaciones aritméticas
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> 1 + 2
+3
+iex> 5 * 5
+25
+iex> 10 / 2
+5.0
+```
+
+Nota que la división `10 / 2` retorna un flotante `5.0` en vez del entero `5`, esto es esperado. En Elixir, el operador `/` siempre retorna un flotante. Si quieres hacer una división entera u obtener el remanente de la división, podemos hacer uso de las funciones `div` y `rem`:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> div(10, 2)
+5
+iex> div 10, 2
+5
+iex> rem 10, 3
+1
+```
+
+Nota que Elixir te permite ignorar los paréntesis cuando invocas funciones por nombre con al menos un argumento. Esta funcionalidad the ofrece una sintaxis más limpia cuando escribes declaraciones o constructos de flujo de control. Sin embargo, los desarrolladores en Elixir generalmente prefieren usar los paréntesis.
+
+Los numeros flotantes requieren un punto seguido de al menos un digito y también soportan notación científica.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> 1.0
+1.0
+iex> 1.0e-10
+1.0e-10
+```
+
+Los números flotantes en Elixir tienen una doble precisión de 64 bits.
+
+Pueden invocar la función `round` para obtener el entero más cercano al flotante dado, o la función `trunc` para obtener la parte entera de un flotante.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> round(3.58)
+4
+iex> trunc(3.58)
+3
+```
+
+### Identificando funciones y documentación
+
+Las funciones en Elixir son identificadas tanto por su nombre como el numero de argumentos que la función toma.
+
+Podemos utilizar esta sintaxis para acceder a la documentación. La consola interactiva de Elixir define la funcion `h`, la cual puede ser usada para acceder a la documentación de cualquier función. Por ejemplo, si escribimos `h trunc/1` la consola va a imprimir la documentación para funcion dada.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(1)> h trunc/1
+
+                               def trunc(number)
+
+  @spec trunc(number()) :: integer()
+
+guard: true
+
+Returns the integer part of number.
+```
+
+`h trunc/1` funciona porque está definida en el módulo `Kernel`. Todas las funciones en el módulo `Kernel` son automáticamente importadas. En la mayoría de los casos necesitarás incluir el nombre del módulo cuando estés buscando la documentación para una función en particular.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(1)> h Kernel.trunc/1
+
+                               def trunc(number)
+
+  @spec trunc(number()) :: integer()
+
+guard: true
+
+Returns the integer part of number.
+```
+
+Podemos usar la combinación de módulo más el nombre de la función para buscar cualquier cosa, incluyendo operadores:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(3)> h Kernel.+/2
+
+                                def left + right
+
+  @spec integer() + integer() :: integer()
+  @spec float() + float() :: float()
+  @spec integer() + float() :: float()
+  @spec float() + integer() :: float()
+
+guard: true
+
+Arithmetic addition operator.
+```
+
+Si invocamos la funcion `h` sin argumentos nos mostrará la documentacion para `IEx.Helpers`, que es donde la funcion `h` entre otras funcionalidades ha sido definida.
+
+### Valores booleanos
+
+Elixir soporta `true` y `false` como valores booleanos.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> true
+true
+iex> true == false
+false
+```
+
+Elixir provee funciones para verificar el tipo de dato de los valores dados. Por ejemplo, la funcion `is_boolean/1` puede ser usada para verificar si un valor dado es booleano o no.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> is_boolean(true)
+true
+iex> is_boolean(1)
+false
+```
+
+También puedes user `is_integer/1`, `is_float/1` o `is_number/1` para verificar, si el argumento dado es un entero, flotante o número, respectivamente.
+
+### Átomos o Símbolos
+
+Un átomo es una constante cuyo valor es su propio nombre. Algunos lenguajes llaman a esta característica símbolos. Suelen usarse para enumerar sobre distintos valores:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> :apple
+:apple
+iex> :orange
+:orange
+iex> :watermelon
+:watermelon
+```
+
+Los átomos son iguales si sus nombres son iguales:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> :apple == :apple
+true
+iex> :apple == :orange
+false
+```
+
+En Elixir y Erlang, los atomos usualmente expresan el estado de una operacion, por ejemplo, usando valores `:ok` o `:error`
+
+Una interesante caracteristica es que los booleanos `true` y `false` tambien son atomos:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> true == :true
+true
+iex> is_atom(false)
+true
+iex> is_boolean(:true)
+true
+```
+
+Elixir te permite ignorar los dos puntos al inicio para los atomos `true`, `false`, y `nil`.
+
+Finalmente, Elixir tiene un constructo llamado alias, que exploraremos mas adelante. Los alias comienzan con una letra mayúscula y también son considerados átomos:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> is_atom(Hello)
+true
+```
+
+## Inmutabilidad
+
+```elixir
+list = [:foo, :bar, :baz]
+```
+
+La mayoría de las estructuras de datos de Erlang, y por consiguiente de Elixir
+
+```elixir
+List.delete_at(list, 1)
+```
+
+```elixir
+list
+```
+
+## Funciones anónimas y de alto nivel
+
+En esta seccion estamos viendo varios conceptos: El primero de ellos es el uso
+de funciones anonimas o lambdas, las funciones anonimas pueden pasarse como
+argumentos a otras funciones, y aca nos aprovechamos de dicha caracteristica
+para crear una funcion de orden superior.
+
+```elixir
+sum = fn n ->
+  fn x -> x + n end
+end
+```
+
+```elixir
+add42 = sum.(42)
+```
+
+```elixir
+add42.(1)
+```
+
+```elixir
+Enum.map([1, 2, 3, 4], fn x ->
+  x * 3
+end)
+```
+
+El operador capture
+
+```elixir
+Enum.map([1, 2, 3, 4], &(&1 * 3))
+```
+
+```elixir
+Enum.map([1, 2, 3, 4], &(&1 * 3))
+```
+
+## Impurezas
+
+```elixir
+IO.puts("Hola mundo!")
+```
+
+```elixir
+Time.utc_now()
+```
+
+```elixir
+Time.utc_now()
+```
+
+## Coincidencia de patrones
+
+`=` no es lo que parece
+
+```elixir
+a = 1
+```
+
+Pattern matching es funcionalidad que existe en muchos lenguajes funcionales, y
+una vez que te acostumbras, es dificil sentirse cómodo en lenguajes que no
+soportan esta característica. Pero veamos de lo que trata.
+
+En Elixir a = 1 no significa que estamos asignando 1 a la variable a.
+
+En realidad lo que indica el signo de igual en este caso es que estamos
+asegurando que el lado izquierdo del operador sea igual al lado derecho. Tal
+cual como aprendimos en algebra.
+
+```elixir
+1 = a
+```
+
+* En Elixir, en vez asignar a una variable, decimos que estamos atando a una variable.
+* A diferencia de Erlang, Elixir permite hacer _rebinding_ a una variable.
+
+```elixir
+a = 1
+a = 2
+```
+
+En realidad internamente Elixir crea nuevos bindings por nosotros, para ser compatible con Erlang.
+
+```elixir
+list = [1, 2, 3, 4]
+[first, second | rest] = list
+```
+
+Podemos coincidencia de patrones con estructuras de datos y vincular (binding)
+con "variables"
+
+La coincidencia de patrones es extremadamente útil para dividir complejas
+estructuras de datos y filtrar las partes que queremos o necesitamos
+
+```elixir
+IO.inspect(first)
+IO.inspect(second)
+IO.inspect(rest)
+```
+
+```elixir
+tupla = {:mi, :tupla, 4, "elementos"}
+{:mi, :tupla, cantidad, "ele" <> resto} = tupla
+```
+
+Podemos hacer coincidir patrones sobre estructuras de datos complejas, así como
+también podemos hacer coincidir sobre valores.
+
+`=` puede usarse como "asignación" porque la "variable" coincidirá con
+cualquier cosa a la que sea asociada.
+
+```elixir
+IO.inspect(cantidad)
+IO.inspect(resto)
+IO.inspect(tuple_size(tupla))
+```
+
+### Ignorando valores
+
+Podemos ignorar valores haciendo uso de `_`
+
+```elixir
+[a, _, _] = [1, 2, 3]
+a
+```
+
+```elixir
+_
+```
+
+### Operador pin (^)
+
+Podemos reusar un valor previamente atado a una variable por medio del operador pin (`^`)
+
+```elixir
+a = 1
+[^a, 2, 3] = [1, 2, 3]
+```
+
+```elixir
+b = 2
+[^b, 2, 3] = [1, 2, 3]
+```
+
+### Coincidencia de patrones
+
+También puede ser usado cabeceras de funciones o function heads:
+
+```elixir
+defmodule Demo do
+  def hacer_algo(:algo) do
+    :algo
+  end
+
+  def hacer_algo(:algo_mas) do
+    :algo_mas
+  end
+end
+```
+
+```elixir
+Demo.hacer_algo(:algo)
+```
+
+```elixir
+Demo.hacer_algo(:algo_mas)
+```
+
+La coincidencia de patrones también puede ser usada en cabaceras de funciones.
+
+* Esta funcionalidad está bastante optimizada en la máquina virtual de Erlang
+* Muchas veces hace que el código se vea más limpio y sea más sencillo de comprender.
+* Muchas veces es preferible utilizar este patrón en vez de condicionales, dado que se le da mayor visibilidad a la estructura de los datos en sí y nos ayuda a dividir esa parte de la lógica.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Pattern Matching + Guards = polimorfismo
+
+```elixir
+defmodule Factorial do
+  def of(n) when n < 0 do
+    raise "negative"
+  end
+
+  def of(0), do: 1
+
+  def of(n) do
+    n * of(n - 1)
+  end
+end
+```
+
+```elixir
+Factorial.of(5)
+```
+
+```elixir
+Factorial.of(-1)
+```
+
+Usualmente es posible ofrecer polimorfismo por medio de tipos.
+
+En Elixir, puedes ofrecer polimorfismo por medio de guardas y funciones incluidas para validar los tipos de datos (como `is_integer/1`).
+
+## Operador pipe |>
+
+Permite transformar código como este:
+
+```elixir
+Enum.map(List.flatten([1, [2], 3]), fn x -> x * 2 end)
+```
+
+El operador pipe puede transformar tú código en una pieza bastante legible, y te permite pensar en el flujo de transformación de los datos
+
+```elixir
+[1, [2], 3] |> List.flatten() |> Enum.map(fn x -> x * 2 end)
+```
+
+También funciona en múltiples líneas:
+
+```elixir
+[1, [2], 3]
+|> List.flatten()
+|> Enum.map(fn x -> x * 2 end)
+```
+
+El operador pipe toma la expresion del lado izquierdo y la pasa como primer argumento de la funcion que se encuentra del lado derecho.
+
+De cierto modo funciona como el pipe en sistemas Unix. Es realmente util, especialmente por Elixir es un lenguaje funcional, y los lenguajes funcionales usualmente se basan en transformaciones de datos debido a la inmutabilidad. Este operador aumenta la visibilidad dichas transformaciones.
+
+## Documentacion
+
+```elixir
+defmodule MyApp do
+  @moduledoc """
+  Documentation for `MyApp`.
+  """
+
+  @doc """
+  Hello world.
+
+  ## Examples
+
+      iex> MyApp.hello()
+      :world
+
+  """
+  def hello do
+    :world
+  end
+end
+```
+
+Elixir soporta documentacion para sus funciones y modulos, el formato que suele usarse es Markdown.
+
+Tambien podemos obtener la documentacion de manera programatica, asi como generar documentacion para nuestros proyectos en formato HTML o EPUB por herramientas que Elixir tambien provee.

@@ -1,0 +1,306 @@
+# Tipos básicos
+
+## Introducción
+
+En esta clase aprenderemos que Elixir soporta tipos de datos básicos como: enteros, flotantes, booleanos, átomos o también conocidos como símbolos, cadenas de caracteres, listas, tuplas, entre otros.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> 1          # integer
+iex> 0x1F       # integer
+iex> 1.0        # float
+iex> true       # boolean
+iex> :atom      # atom / symbol
+iex> "elixir"   # string
+iex> [1, 2, 3]  # list
+iex> {1, 2, 3}  # tuple
+```
+
+## Operaciones aritméticas
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> 1 + 2
+3
+iex> 5 * 5
+25
+iex> 10 / 2
+5.0
+```
+
+Nota que la división `10 / 2` retorna un flotante `5.0` en vez del entero `5`, esto es esperado. En Elixir, el operador `/` siempre retorna un flotante. Si quieres hacer una división entera u obtener el remanente de la división, podemos hacer uso de las funciones `div` y `rem`:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> div(10, 2)
+5
+iex> div 10, 2
+5
+iex> rem 10, 3
+1
+```
+
+Nota que Elixir te permite ignorar los paréntesis cuando invocas funciones por nombre con al menos un argumento. Esta funcionalidad the ofrece una sintaxis más limpia cuando escribes declaraciones o constructos de flujo de control. Sin embargo, los desarrolladores en Elixir generalmente prefieren usar los paréntesis.
+
+Los numeros flotantes requieren un punto seguido de al menos un digito y también soportan notación científica.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> 1.0
+1.0
+iex> 1.0e-10
+1.0e-10
+```
+
+Los números flotantes en Elixir tienen una doble precisión de 64 bits.
+
+Pueden invocar la función `round` para obtener el entero más cercano al flotante dado, o la función `trunc` para obtener la parte entera de un flotante.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> round(3.58)
+4
+iex> trunc(3.58)
+3
+```
+
+## Identificando funciones y documentación
+
+Las funciones en Elixir son identificadas tanto por su nombre como el numero de argumentos que la función toma.
+
+Podemos utilizar esta sintaxis para acceder a la documentación. La consola interactiva de Elixir define la funcion `h`, la cual puede ser usada para acceder a la documentación de cualquier función. Por ejemplo, si escribimos `h trunc/1` la consola va a imprimir la documentación para funcion dada.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(1)> h trunc/1
+
+                               def trunc(number)
+
+  @spec trunc(number()) :: integer()
+
+guard: true
+
+Returns the integer part of number.
+```
+
+`h trunc/1` funciona porque está definida en el módulo `Kernel`. Todas las funciones en el módulo `Kernel` son automáticamente importadas. En la mayoría de los casos necesitarás incluir el nombre del módulo cuando estés buscando la documentación para una función en particular.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(1)> h Kernel.trunc/1
+
+                               def trunc(number)
+
+  @spec trunc(number()) :: integer()
+
+guard: true
+
+Returns the integer part of number.
+```
+
+Podemos usar la combinación de módulo más el nombre de la función para buscar cualquier cosa, incluyendo operadores:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(3)> h Kernel.+/2
+
+                                def left + right
+
+  @spec integer() + integer() :: integer()
+  @spec float() + float() :: float()
+  @spec integer() + float() :: float()
+  @spec float() + integer() :: float()
+
+guard: true
+
+Arithmetic addition operator.
+```
+
+Si invocamos la funcion `h` sin argumentos nos mostrará la documentacion para `IEx.Helpers`, que es donde la funcion `h` entre otras funcionalidades ha sido definida.
+
+## Valores booleanos
+
+Elixir soporta `true` y `false` como valores booleanos.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> true
+true
+iex> true == false
+false
+```
+
+Elixir provee funciones para verificar el tipo de dato de los valores dados. Por ejemplo, la funcion `is_boolean/1` puede ser usada para verificar si un valor dado es booleano o no.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> is_boolean(true)
+true
+iex> is_boolean(1)
+false
+```
+
+También puedes user `is_integer/1`, `is_float/1` o `is_number/1` para verificar, si el argumento dado es un entero, flotante o número, respectivamente.
+
+## Átomos o Símbolos
+
+Un átomo es una constante cuyo valor es su propio nombre. Algunos lenguajes llaman a esta característica símbolos. Suelen usarse para enumerar sobre distintos valores:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> :apple
+:apple
+iex> :orange
+:orange
+iex> :watermelon
+:watermelon
+```
+
+Los átomos son iguales si sus nombres son iguales:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> :apple == :apple
+true
+iex> :apple == :orange
+false
+```
+
+En Elixir y Erlang, los atomos usualmente expresan el estado de una operacion, por ejemplo, usando valores `:ok` o `:error`
+
+Una interesante caracteristica es que los booleanos `true` y `false` tambien son atomos:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> true == :true
+true
+iex> is_atom(false)
+true
+iex> is_boolean(:true)
+true
+```
+
+Elixir te permite ignorar los dos puntos al inicio para los atomos `true`, `false`, y `nil`.
+
+Finalmente, Elixir tiene un constructo llamado alias, que exploraremos mas adelante. Los alias comienzan con una letra mayúscula y también son considerados átomos:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> is_atom(Hello)
+true
+```
+
+## Strings
+
+Las cadenas en Elixir están delimitadas por comillas dobles, y están codificadas en UTF-8:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> "hellö"
+"hellö"
+```
+
+Elixir también soporta interpolación:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> string = :world
+iex> "hellö #{string}"
+"hellö world"
+```
+
+Las cadenas pueden tener saltos de líneas en ellas. Puedes introducirlas con sequencias de escape como suele hacerse en otros lenguajes de programación:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> "hello
+...> world"
+"hello\nworld"
+iex> "hello\nworld"
+"hello\nworld"
+```
+
+Puedes imprimir una cadena usando la función `IO.puts/1` del módulo IO:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> IO.puts("hello\nworld")
+hello
+world
+:ok
+```
+
+Nota que la función `IO.puts/1` returna el átomo `:ok` después de imprimir.
+
+Podemos obtener la longitud de una cadena, basada en su número de grafemas (unidad mínima e indivisible de la escritura de una lengua), usando la función `String.length/1`.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> String.length("hellö")
+5
+```
+
+El módulo [String](https://hexdocs.pm/elixir/String.html) contiene muchas funciones que operan sobre cadenas tal como está definido en el estándar Unicode.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> String.upcase("hellö")
+"HELLÖ"
+```
+
+## Funciones anónimas y de alto nivel
+
+En esta seccion estamos viendo varios conceptos: El primero de ellos es el uso
+de funciones anonimas o lambdas, las funciones anonimas pueden pasarse como
+argumentos a otras funciones, y aca nos aprovechamos de dicha caracteristica
+para crear una funcion de orden superior.
+
+```elixir
+sum = fn n ->
+  fn x -> x + n end
+end
+```
+
+```elixir
+add42 = sum.(42)
+```
+
+```elixir
+add42.(1)
+```
+
+```elixir
+Enum.map([1, 2, 3, 4], fn x ->
+  x * 3
+end)
+```
+
+El operador capture
+
+```elixir
+Enum.map([1, 2, 3, 4], &(&1 * 3))
+```
+
+```elixir
+Enum.map([1, 2, 3, 4], &(&1 * 3))
+```

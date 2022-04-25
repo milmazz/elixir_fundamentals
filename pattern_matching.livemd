@@ -1,0 +1,207 @@
+# Pattern Matching
+
+## Coincidencia de patrones
+
+`=` no es lo que parece
+
+```elixir
+a = 1
+```
+
+Pattern matching es funcionalidad que existe en muchos lenguajes funcionales, y
+una vez que te acostumbras, es dificil sentirse cómodo en lenguajes que no
+soportan esta característica. Pero veamos de lo que trata.
+
+En Elixir a = 1 no significa que estamos asignando 1 a la variable a.
+
+En realidad lo que indica el signo de igual en este caso es que estamos
+asegurando que el lado izquierdo del operador sea igual al lado derecho. Tal
+cual como aprendimos en algebra.
+
+```elixir
+1 = a
+```
+
+* En Elixir, en vez asignar a una variable, decimos que estamos atando a una variable.
+* A diferencia de Erlang, Elixir permite hacer _rebinding_ a una variable.
+
+```elixir
+a = 1
+a = 2
+```
+
+En realidad internamente Elixir crea nuevos bindings por nosotros, para ser compatible con Erlang.
+
+```elixir
+list = [1, 2, 3, 4]
+[first, second | rest] = list
+```
+
+Podemos coincidencia de patrones con estructuras de datos y vincular (binding)
+con "variables"
+
+La coincidencia de patrones es extremadamente útil para dividir complejas
+estructuras de datos y filtrar las partes que queremos o necesitamos
+
+```elixir
+IO.inspect(first)
+IO.inspect(second)
+IO.inspect(rest)
+```
+
+```elixir
+tupla = {:mi, :tupla, 4, "elementos"}
+{:mi, :tupla, cantidad, "ele" <> resto} = tupla
+```
+
+Podemos hacer coincidir patrones sobre estructuras de datos complejas, así como
+también podemos hacer coincidir sobre valores.
+
+`=` puede usarse como "asignación" porque la "variable" coincidirá con
+cualquier cosa a la que sea asociada.
+
+```elixir
+IO.inspect(cantidad)
+IO.inspect(resto)
+IO.inspect(tuple_size(tupla))
+```
+
+### Ignorando valores
+
+Podemos ignorar valores haciendo uso de `_`
+
+```elixir
+[a, _, _] = [1, 2, 3]
+a
+```
+
+```elixir
+_
+```
+
+### Operador pin (^)
+
+Podemos reusar un valor previamente atado a una variable por medio del operador pin (`^`)
+
+```elixir
+a = 1
+[^a, 2, 3] = [1, 2, 3]
+```
+
+```elixir
+b = 2
+[^b, 2, 3] = [1, 2, 3]
+```
+
+### Coincidencia de patrones
+
+También puede ser usado cabeceras de funciones o function heads:
+
+```elixir
+defmodule Demo do
+  def hacer_algo(:algo) do
+    :algo
+  end
+
+  def hacer_algo(:algo_mas) do
+    :algo_mas
+  end
+end
+```
+
+```elixir
+Demo.hacer_algo(:algo)
+```
+
+```elixir
+Demo.hacer_algo(:algo_mas)
+```
+
+La coincidencia de patrones también puede ser usada en cabaceras de funciones.
+
+* Esta funcionalidad está bastante optimizada en la máquina virtual de Erlang
+* Muchas veces hace que el código se vea más limpio y sea más sencillo de comprender.
+* Muchas veces es preferible utilizar este patrón en vez de condicionales, dado que se le da mayor visibilidad a la estructura de los datos en sí y nos ayuda a dividir esa parte de la lógica.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Pattern Matching + Guards = polimorfismo
+
+```elixir
+defmodule Factorial do
+  def of(n) when n < 0 do
+    raise "negative"
+  end
+
+  def of(0), do: 1
+
+  def of(n) do
+    n * of(n - 1)
+  end
+end
+```
+
+```elixir
+Factorial.of(5)
+```
+
+```elixir
+Factorial.of(-1)
+```
+
+Usualmente es posible ofrecer polimorfismo por medio de tipos.
+
+En Elixir, puedes ofrecer polimorfismo por medio de guardas y funciones incluidas para validar los tipos de datos (como `is_integer/1`).
+
+## Operador pipe |>
+
+Permite transformar código como este:
+
+```elixir
+Enum.map(List.flatten([1, [2], 3]), fn x -> x * 2 end)
+```
+
+El operador pipe puede transformar tú código en una pieza bastante legible, y te permite pensar en el flujo de transformación de los datos
+
+```elixir
+[1, [2], 3] |> List.flatten() |> Enum.map(fn x -> x * 2 end)
+```
+
+También funciona en múltiples líneas:
+
+```elixir
+[1, [2], 3]
+|> List.flatten()
+|> Enum.map(fn x -> x * 2 end)
+```
+
+El operador pipe toma la expresion del lado izquierdo y la pasa como primer argumento de la funcion que se encuentra del lado derecho.
+
+De cierto modo funciona como el pipe en sistemas Unix. Es realmente util, especialmente por Elixir es un lenguaje funcional, y los lenguajes funcionales usualmente se basan en transformaciones de datos debido a la inmutabilidad. Este operador aumenta la visibilidad dichas transformaciones.
+
+## Documentacion
+
+```elixir
+defmodule MyApp do
+  @moduledoc """
+  Documentation for `MyApp`.
+  """
+
+  @doc """
+  Hello world.
+
+  ## Examples
+
+      iex> MyApp.hello()
+      :world
+
+  """
+  def hello do
+    :world
+  end
+end
+```
+
+Elixir soporta documentacion para sus funciones y modulos, el formato que suele usarse es Markdown.
+
+Tambien podemos obtener la documentacion de manera programatica, asi como generar documentacion para nuestros proyectos en formato HTML o EPUB por herramientas que Elixir tambien provee.
