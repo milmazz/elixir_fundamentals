@@ -1,0 +1,373 @@
+# Tipos básicos
+
+## Introducción
+
+En esta clase aprenderemos que Elixir soporta tipos de datos básicos como: enteros, flotantes, booleanos, átomos o también conocidos como símbolos, cadenas de caracteres, listas, tuplas, entre otros.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> 1          # integer
+iex> 0x1F       # integer
+iex> 1.0        # float
+iex> true       # boolean
+iex> :atom      # atom / symbol
+iex> "elixir"   # string
+iex> [1, 2, 3]  # list
+iex> {1, 2, 3}  # tuple
+```
+
+## Operaciones aritméticas
+
+```elixir
+1 + 1
+```
+
+```elixir
+5 * 5
+```
+
+```elixir
+10 / 2
+```
+
+Nota que la división `10 / 2` retorna un flotante `5.0` en vez del entero `5`, esto es esperado. En Elixir, el operador `/` siempre retorna un flotante. Si quieres hacer una división entera u obtener el remanente de la división, podemos hacer uso de las funciones `div` y `rem`:
+
+```elixir
+div(10, 2)
+```
+
+```elixir
+div(10, 2)
+```
+
+```elixir
+rem(10, 3)
+```
+
+Nota que Elixir te permite ignorar los paréntesis cuando invocas funciones por nombre con al menos un argumento. Esta funcionalidad the ofrece una sintaxis más limpia cuando escribes declaraciones o constructos de flujo de control. Sin embargo, los desarrolladores en Elixir generalmente prefieren usar los paréntesis.
+
+Los números flotantes requieren un punto seguido de al menos un digito y también soportan notación científica.
+
+```elixir
+1.0
+```
+
+```elixir
+1.0e-10
+```
+
+Los números flotantes en Elixir tienen una doble precisión de 64 bits.
+
+Pueden invocar la función `round` para obtener el entero más cercano al flotante dado, o la función `trunc` para obtener la parte entera de un flotante.
+
+```elixir
+round(3.58)
+```
+
+```elixir
+trunc(3.58)
+```
+
+## Identificando funciones y documentación
+
+Las funciones en Elixir son identificadas tanto por su nombre como el numero de argumentos que la función toma.
+
+Podemos utilizar esta sintaxis para acceder a la documentación. La consola interactiva de Elixir define la funcion `h`, la cual puede ser usada para acceder a la documentación de cualquier función. Por ejemplo, si escribimos `h trunc/1` la consola va a imprimir la documentación para funcion dada.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(1)> h trunc/1
+
+                               def trunc(number)
+
+  @spec trunc(number()) :: integer()
+
+guard: true
+
+Returns the integer part of number.
+```
+
+`h trunc/1` funciona porque está definida en el módulo `Kernel`. Todas las funciones en el módulo `Kernel` son automáticamente importadas. En la mayoría de los casos necesitarás incluir el nombre del módulo cuando estés buscando la documentación para una función en particular.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(1)> h Kernel.trunc/1
+
+                               def trunc(number)
+
+  @spec trunc(number()) :: integer()
+
+guard: true
+
+Returns the integer part of number.
+```
+
+Podemos usar la combinación de módulo más el nombre de la función para buscar cualquier cosa, incluyendo operadores:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex(3)> h Kernel.+/2
+
+                                def left + right
+
+  @spec integer() + integer() :: integer()
+  @spec float() + float() :: float()
+  @spec integer() + float() :: float()
+  @spec float() + integer() :: float()
+
+guard: true
+
+Arithmetic addition operator.
+```
+
+Si invocamos la funcion `h` sin argumentos nos mostrará la documentacion para `IEx.Helpers`, que es donde la funcion `h` entre otras funcionalidades ha sido definida.
+
+## Valores booleanos
+
+Elixir soporta `true` y `false` como valores booleanos.
+
+```elixir
+true
+```
+
+```elixir
+true == false
+```
+
+Elixir provee funciones para verificar el tipo de dato de los valores dados. Por ejemplo, la funcion `is_boolean/1` puede ser usada para verificar si un valor dado es booleano o no.
+
+```elixir
+is_boolean(true)
+```
+
+```elixir
+is_boolean(1)
+```
+
+También puedes user `is_integer/1`, `is_float/1` o `is_number/1` para verificar, si el argumento dado es un entero, flotante o número, respectivamente.
+
+## Átomos o Símbolos
+
+Un átomo es una constante cuyo valor es su propio nombre. Algunos lenguajes llaman a esta característica símbolos. Suelen usarse para enumerar sobre distintos valores:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> :apple
+:apple
+iex> :orange
+:orange
+iex> :watermelon
+:watermelon
+```
+
+Los átomos son iguales si sus nombres son iguales:
+
+```elixir
+:apple == :apple
+```
+
+```elixir
+:apple == :orange
+```
+
+En Elixir y Erlang, los atomos usualmente expresan el estado de una operacion, por ejemplo, usando valores `:ok` o `:error`
+
+Una interesante caracteristica es que los booleanos `true` y `false` tambien son atomos:
+
+```elixir
+true == true
+```
+
+```elixir
+is_atom(false)
+```
+
+```elixir
+is_boolean(true)
+```
+
+Elixir te permite ignorar los dos puntos al inicio para los atomos `true`, `false`, y `nil`.
+
+Finalmente, Elixir tiene un constructo llamado alias, que exploraremos mas adelante. Los alias comienzan con una letra mayúscula y también son considerados átomos:
+
+```elixir
+is_atom(Hello)
+```
+
+## Strings
+
+Las cadenas en Elixir están delimitadas por comillas dobles, y están codificadas en UTF-8:
+
+```elixir
+"hellö"
+```
+
+Elixir también soporta interpolación:
+
+```elixir
+string = :world
+"hellö #{string}"
+```
+
+Las cadenas pueden tener saltos de líneas en ellas. Puedes introducirlas con sequencias de escape como suele hacerse en otros lenguajes de programación:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> "hello
+...> world"
+"hello\nworld"
+iex> "hello\nworld"
+"hello\nworld"
+```
+
+Puedes imprimir una cadena usando la función `IO.puts/1` del módulo IO:
+
+```elixir
+IO.puts("hello\nworld")
+```
+
+Nota que la función `IO.puts/1` returna el átomo `:ok` después de imprimir.
+
+Podemos obtener la longitud de una cadena, basada en su número de grafemas (unidad mínima e indivisible de la escritura de una lengua), usando la función `String.length/1`.
+
+```elixir
+String.length("hellö")
+```
+
+El módulo [String](https://hexdocs.pm/elixir/String.html) contiene muchas funciones que operan sobre cadenas tal como está definido en el estándar Unicode.
+
+```elixir
+String.upcase("hellö")
+```
+
+## Funciones anónimas
+
+Elixir también provee funciones anónimas. Las funciones anónimas nos permiten guardar y pasar código ejecutable como si se tratara de un entero o flotante. Están delimitadas por las palabras clave `fn` y `end`.
+
+```elixir
+add = fn a, b -> a + b end
+```
+
+```elixir
+add.(1, 2)
+```
+
+```elixir
+is_function(add)
+```
+
+En el ejemplo anterior, definimos una función anónima que recibe dos argumentos, `a`y `b`, y retorna el resultado de `a + b`. Los argumentos siempre están en el lado izquierdo de `->` y el código que será ejecutado se encuentra en el lado derecho. La función anónima es guardada en la variable `add`.
+
+Podemos invocar la función anónima pasándole argumentos. Nota el punto (`.`) alrededor de la variable y los paréntesis son requeridos para invocar la función anónima. El punto asegura que no hay ambiguedad entre llamar a una función anónima que coincide con la variable `add` y la función que lleva por nombre `add/2`. Más adelante veremos como definir nuestras propias funciones con nombres. Por ahora, recuerda que Elixir hace una clara distinción entre funciones anónimas y funciones que llevan nombres.
+
+Las funciones anónimas en Elixir también son identificadas por el número de argumentos que reciben. Podemos verificar si una función recibe cierta cantidad de argumentos usando `is_function/2`.
+
+```elixir
+is_function(add, 2)
+```
+
+```elixir
+is_function(add, 1)
+```
+
+Finalmente, las funciones anónimas pueden acceder a variables que estén al alcance de la función cuando fue definida. Esto es tipicamente conocido como _clausuras_. Definamos una nueva función anónima que usa a `add`, que hemos definido previamente también como función anónima:
+
+```elixir
+double = fn a -> add.(a, a) end
+double.(2)
+```
+
+Es importante aclarar que una variable asignada dentro de una función anónima no afecta el entorno que la rodea.
+
+```elixir
+x = 42
+(fn -> x = 0 end).()
+x
+```
+
+## Listas
+
+Elixir usa corchetes para especificar una lista de valores. Los valores pueden ser de cualquier tipo:
+
+```elixir
+[1, 2, true, 3]
+```
+
+```elixir
+length([1, 2, 3])
+```
+
+Dos listas pueden ser concatenadas or substraidas usando los operadores `++/2` y `--/2` respectivamente:
+
+```elixir
+[1, 2, 3] ++ [4, 5, 6]
+```
+
+```elixir
+[1, true, 2, false, 3, true] -- [true, false]
+```
+
+Los operadores sobre listas nunca modifican la lista existente. Concatenar o remover elementos de una lista retorna una nueva lista. Por lo tanto, decimos que las estructuras de datos en Elixir son inmutables. Una ventaja de la inmutabilidad es que tiende a código más limpio. Eres libre de pasar datos entre llamadas con la garantía que ninguna mutará el dato original en memoria, solo lo transformará en otros datos.
+
+Usualmente cuando hablamos de listas, nos interesa acceder a la cabeza de la lista y su cola. La cabeza es el primer elemento de la lista y su cola es lo remanente de la lista. Podemos acceder a ellas con las funciones `hd/1` y `tl/2`. Asignemos una lista a una variable y obtengamos su cabeza y cola.
+
+```elixir
+list = [1, 2, 3]
+hd(list)
+```
+
+```elixir
+tl(list)
+```
+
+Si tratamos de obtener la cabeza o la cola de una lista vacía obtenemos un error.
+
+```elixir
+hd([])
+```
+
+```elixir
+tl([])
+```
+
+## Tuplas
+
+Elixir usa llaves para definir tuplas. Como las listas, las tuplas pueden contener cualquier tipo de dato.
+
+```elixir
+{:ok, "hello"}
+```
+
+```elixir
+tuple_size({:ok, "hello"})
+```
+
+Las tuplas almacenan elementos de manera contigua en memoria. Esto quiere decir que acceder a un elemento de la tupla por su índice u obtener el tamaño de la tupla es una operación muy rápida. El índice comienza a partir de cero.
+
+```elixir
+tuple = {:ok, "hello"}
+elem(tuple, 1)
+```
+
+```elixir
+tuple_size(tuple)
+```
+
+También es posible poner un elemento en un índice particular de la tupla con `put_elem/3`
+
+```elixir
+tuple = {:ok, "hello"}
+put_elem(tuple, 1, "world")
+```
+
+```elixir
+tuple
+```
+
+Nota que `put_elem/3` retornó una nueva tupla. La tupla original almacenada en la variable `tuple` no fue modificada. Así como con las listas, las tuplas son inmutables. Cada operación que modifica una tupla, retorna una nueva tupla, nunca cambiará la tupla dada como argumento.
