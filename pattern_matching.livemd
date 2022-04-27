@@ -1,207 +1,217 @@
 # Pattern Matching
 
-## Coincidencia de patrones
+## Introducción
 
-`=` no es lo que parece
+En esta clase, veremos como el operador `=` en Elixir es en realidad un operador de equivalencia y como puedes usarlo para hacer coincidir patrones dentro de estructuras de datos. Finalmente, veremos el operador pin (`^`), el cual se usa para acceder a valores previamente asignados.
+
+## Operador de equivalencia
+
+Hemos venido usando el operador `=` unas tantas veces hasta ahora para asignar variables en Elixir:
 
 ```elixir
-a = 1
+x = 1
+x
 ```
 
-Pattern matching es funcionalidad que existe en muchos lenguajes funcionales, y
-una vez que te acostumbras, es dificil sentirse cómodo en lenguajes que no
-soportan esta característica. Pero veamos de lo que trata.
-
-En Elixir a = 1 no significa que estamos asignando 1 a la variable a.
-
-En realidad lo que indica el signo de igual en este caso es que estamos
-asegurando que el lado izquierdo del operador sea igual al lado derecho. Tal
-cual como aprendimos en algebra.
+En Elixir, el operador `=` es en realidad un operador de _equivalencia_. Veamos por qué:
 
 ```elixir
-1 = a
-```
-
-* En Elixir, en vez asignar a una variable, decimos que estamos atando a una variable.
-* A diferencia de Erlang, Elixir permite hacer _rebinding_ a una variable.
-
-```elixir
-a = 1
-a = 2
-```
-
-En realidad internamente Elixir crea nuevos bindings por nosotros, para ser compatible con Erlang.
-
-```elixir
-list = [1, 2, 3, 4]
-[first, second | rest] = list
-```
-
-Podemos coincidencia de patrones con estructuras de datos y vincular (binding)
-con "variables"
-
-La coincidencia de patrones es extremadamente útil para dividir complejas
-estructuras de datos y filtrar las partes que queremos o necesitamos
-
-```elixir
-IO.inspect(first)
-IO.inspect(second)
-IO.inspect(rest)
+x = 1
 ```
 
 ```elixir
-tupla = {:mi, :tupla, 4, "elementos"}
-{:mi, :tupla, cantidad, "ele" <> resto} = tupla
+1 = x
 ```
 
-Podemos hacer coincidir patrones sobre estructuras de datos complejas, así como
-también podemos hacer coincidir sobre valores.
-
-`=` puede usarse como "asignación" porque la "variable" coincidirá con
-cualquier cosa a la que sea asociada.
-
 ```elixir
-IO.inspect(cantidad)
-IO.inspect(resto)
-IO.inspect(tuple_size(tupla))
+2 = x
 ```
 
-### Ignorando valores
+Nota que `1 = x` es una expresión válida, y es equivalente porque tanto el lado izquierdo como el derecho son iguales a 1. Cuando los dos lados no son equivalentes, obtenemos una excepción del tipo `MatchError`.
 
-Podemos ignorar valores haciendo uso de `_`
+Una variable solo puede ser asignada en el lado izquierdo de `=`:
 
 ```elixir
-[a, _, _] = [1, 2, 3]
+1 = unknown
+```
+
+Obtenemos un error porque la variable `unknown` no está definida previamente, por lo que Elixir asume que estás tratando de llamar a la función `unknown/0`, pero dicha función no existe.
+
+## Descomponer estructuras de datos vía _Pattern Matching_
+
+El operador de equivalencia no solo es usado para comparar valores simples, sino que también es útil para descomponer tipos de datos más complejos. Por ejemplo, podemos hacer equivalencia de patrones en tuplas:
+
+```elixir
+{a, b, c} = {:hello, "world", 42}
+```
+
+```elixir
 a
 ```
+
+```elixir
+b
+```
+
+Obtendremos un error de equivalencia si no podemos hacer coincidir ambos lados, por ejemplo, si las tuplas tienen distinto tamaño:
+
+```elixir
+{a, b, c} = {:hello, "world"}
+```
+
+Y también obtendremos un error si intentamos comparar distintos tipos, por ejemplo, si intentamos hacer coincidir una tupla en el lado izquierdo con una lista en el lado derecho:
+
+```elixir
+{a, b, c} = [:hello, "world", 42]
+```
+
+Para hacerlo más interesante, podemos hacer equivaler valores específicos. El siguiente ejemplo asegura que el lado izquierdo solo coincidirá con el lado derecho cuando el lado derecho sea una tupla que comience con el átomo `:ok`:
+
+```elixir
+{:ok, result} = {:ok, 13}
+```
+
+```elixir
+result
+```
+
+```elixir
+{:ok, result} = {:error, :oops}
+```
+
+Podemos hacer equivalencia sobre listas:
+
+```elixir
+[a, b, c] = [1, 2, 3]
+```
+
+```elixir
+a
+```
+
+Cuando hacemos equivalencias con listas, podemos extraer su cabeza y cola.
+
+```elixir
+[head | tail] = [1, 2, 3]
+```
+
+```elixir
+head
+```
+
+```elixir
+tail
+```
+
+Similar a las funciones `hd/1` y `tl/1`, no podemos hacer equivalencias sobre listas vacías.
+
+```elixir
+[head | tail] = []
+```
+
+El formato de `[head | tail]` no solo es usado cuando hacemos equivalencias, también es posible usarlo cuando añadimos un elemento a la lista en su cabeza:
+
+```elixir
+list = [1, 2, 3]
+```
+
+```elixir
+[0 | list]
+```
+
+La coincidencia de patrones o _pattern matching_ permite a los desarrolladores descomponer fácilmente estructuras de datos como listas o tuplas. Como veremos más adelante, el uso de _pattern matching_ es uno de las fundaciones para la recursión en Elixir y también lo podemos aplicar en otros tipos de datos, como los mapas y binarios o _strings_.
+
+## El operador pin (`^`)
+
+Las variables en Elixir pueden ser reasignadas.
+
+```elixir
+x = 1
+```
+
+```elixir
+x = 2
+```
+
+Sin embargo, algunas veces no queremos reasignar un nuevo valor a una variable.
+
+Usamos el operador pin `^` cuando queremos hacer coincidir un patron con el valor existente en un variable en lugar de volver a vincularla.
+
+```elixir
+x = 1
+```
+
+```elixir
+^x = 2
+```
+
+Porque hemos usado el operador pin cuando el valor atado a la variable `x` es 1, lo anterior es equivalente a:
+
+```elixir
+1 = 2
+```
+
+Nota que hemos obtenido el mismo mensaje de error.
+
+Podemos usar el operador pin dentro de otras estructuras, como listas o tuplas.
+
+```elixir
+x = 1
+[^x, 2, 3] = [1, 2, 3]
+```
+
+```elixir
+{y, ^x} = {2, 1}
+```
+
+```elixir
+y
+```
+
+```elixir
+{y, ^x} = {2, 2}
+```
+
+Debido a que el valor atado a la variable `x`, cuando usamos el operador, era 1. Es equivalente a tener:
+
+```elixir
+{y, 1} = {2, 2}
+```
+
+Si una variable es usada mas de una vez en un patron, todas las referencias deben estar atadas al mismo valor.
+
+```elixir
+{x, x} = {1, 1}
+```
+
+```elixir
+{x, x} = {1, 2}
+```
+
+En algunos casos, no te interesa el valor particular de un elemento en un patron. Es una practica comun atar dichos valores a la variable _guion bajo_ o _underscore_. Por ejemplo, si solo nos interesa el primer elemento de una lista, podemos asignar el resto a la variable `_`:
+
+```elixir
+[head | _] = [1, 2, 3]
+```
+
+```elixir
+head
+```
+
+La variable `_` es especial en el sentido que nunca podras leerla. Si tratas de hacerlo obtendras un error del compilador.
 
 ```elixir
 _
 ```
 
-### Operador pin (^)
-
-Podemos reusar un valor previamente atado a una variable por medio del operador pin (`^`)
+A pesar que la coincidencia de patrones es bastante poderosa, su uso es limitado. Por ejemplo, no puedes hacer llamados a funciones en el lado izquierdo de la equivalencia.
 
 ```elixir
-a = 1
-[^a, 2, 3] = [1, 2, 3]
+length([1, [2], 3]) = 3
 ```
 
-```elixir
-b = 2
-[^b, 2, 3] = [1, 2, 3]
-```
+Con esto finalizamos nuestra introduccion a la coincidencia de patrones.
 
-### Coincidencia de patrones
+## Nota
 
-También puede ser usado cabeceras de funciones o function heads:
-
-```elixir
-defmodule Demo do
-  def hacer_algo(:algo) do
-    :algo
-  end
-
-  def hacer_algo(:algo_mas) do
-    :algo_mas
-  end
-end
-```
-
-```elixir
-Demo.hacer_algo(:algo)
-```
-
-```elixir
-Demo.hacer_algo(:algo_mas)
-```
-
-La coincidencia de patrones también puede ser usada en cabaceras de funciones.
-
-* Esta funcionalidad está bastante optimizada en la máquina virtual de Erlang
-* Muchas veces hace que el código se vea más limpio y sea más sencillo de comprender.
-* Muchas veces es preferible utilizar este patrón en vez de condicionales, dado que se le da mayor visibilidad a la estructura de los datos en sí y nos ayuda a dividir esa parte de la lógica.
-
-<!-- livebook:{"break_markdown":true} -->
-
-### Pattern Matching + Guards = polimorfismo
-
-```elixir
-defmodule Factorial do
-  def of(n) when n < 0 do
-    raise "negative"
-  end
-
-  def of(0), do: 1
-
-  def of(n) do
-    n * of(n - 1)
-  end
-end
-```
-
-```elixir
-Factorial.of(5)
-```
-
-```elixir
-Factorial.of(-1)
-```
-
-Usualmente es posible ofrecer polimorfismo por medio de tipos.
-
-En Elixir, puedes ofrecer polimorfismo por medio de guardas y funciones incluidas para validar los tipos de datos (como `is_integer/1`).
-
-## Operador pipe |>
-
-Permite transformar código como este:
-
-```elixir
-Enum.map(List.flatten([1, [2], 3]), fn x -> x * 2 end)
-```
-
-El operador pipe puede transformar tú código en una pieza bastante legible, y te permite pensar en el flujo de transformación de los datos
-
-```elixir
-[1, [2], 3] |> List.flatten() |> Enum.map(fn x -> x * 2 end)
-```
-
-También funciona en múltiples líneas:
-
-```elixir
-[1, [2], 3]
-|> List.flatten()
-|> Enum.map(fn x -> x * 2 end)
-```
-
-El operador pipe toma la expresion del lado izquierdo y la pasa como primer argumento de la funcion que se encuentra del lado derecho.
-
-De cierto modo funciona como el pipe en sistemas Unix. Es realmente util, especialmente por Elixir es un lenguaje funcional, y los lenguajes funcionales usualmente se basan en transformaciones de datos debido a la inmutabilidad. Este operador aumenta la visibilidad dichas transformaciones.
-
-## Documentacion
-
-```elixir
-defmodule MyApp do
-  @moduledoc """
-  Documentation for `MyApp`.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> MyApp.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
-end
-```
-
-Elixir soporta documentacion para sus funciones y modulos, el formato que suele usarse es Markdown.
-
-Tambien podemos obtener la documentacion de manera programatica, asi como generar documentacion para nuestros proyectos en formato HTML o EPUB por herramientas que Elixir tambien provee.
+Este tutorial es una traduccion libre del contenido presentado en la seccion [Pattern Matching](https://elixir-lang.org/getting-started/pattern-matching.html), el cual es parte de la guia oficial de Elixir
