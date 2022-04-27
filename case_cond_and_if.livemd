@@ -1,0 +1,196 @@
+# case, cond, if
+
+En esta clase, aprenderemos acerca de `case`, `if`, y `cond` para el control del flujo de nuestras funciones.
+
+## `case`
+
+`case` nos permite comparar un valor con muchos patrones hasta que encontremos el primero que coincida:
+
+```elixir
+case {1, 2, 3} do
+  {4, 5, 6} ->
+    "This clause won't match"
+  {1, x, 3} ->
+    "This clause will match and bind x to 2 in this clause"
+  _ ->
+    "This clause would match any value"
+end
+```
+
+Si quieres hacer coincidir un patron con una variable existente, necesitas usar el operador pin `^`:
+
+```elixir
+x = 1
+
+case 10 do
+  ^x -> "Won't match"
+  _ -> "Will match"
+end
+```
+
+Cada cláusula del `case` permite especificar condiciones adicionales via guardas:
+
+```elixir
+case {1, 2, 3} do
+  {1, x, 3} when x > 0 ->
+    "Will match"
+  _ ->
+    "Would match, if guard condition were not satisfied"
+end
+```
+
+La primera cláusula de arriba coincidirá si el valor de `x` es positivo.
+
+Ten presente que los errores en la guardas no se propagan, simplemente harán que la cláusula falle:
+
+```elixir
+hd(1)
+```
+
+```elixir
+case 1 do
+  x when hd(x) -> "Won't match"
+  x -> "Got #{x}"
+end
+```
+
+Si ninguna de la cláusulas coincide, obtendrás una excepción:
+
+```elixir
+case :ok do
+  :error -> "Won't match"
+end
+```
+
+Para más información, consulta [la documentación sobre guardas](https://hexdocs.pm/elixir/patterns-and-guards.html#guards). Allí podrás ver cómo son usadas y que expresiones son permitidas en ellas.
+
+Nota que las funciones anónimas también pueden llevar múltiples cláusulas y guardas:
+
+```elixir
+f = fn
+  x, y when x > 0 -> x + y
+  x, y -> x * y
+end
+```
+
+```elixir
+f.(1, 3)
+```
+
+```elixir
+f.(-1, 3)
+```
+
+El número de argumentos en cada cláusula de la función anónima debe ser el mismo, de lo contrario, obtendrás un error:
+
+```elixir
+f2 = fn
+  x, y when x > 0 -> x + y
+  x, y, z -> x * y + z
+end
+```
+
+## `cond`
+
+`case` es útil cuando necesitas hacer coincidir un resultado contra diferentes valores. Sin embargo, en muchas circunstancias, queremos verificar dicho resultado controla diferentes condiciones y encontrar la primera de ellas que no evalúa a un valor `nil` o `false`. En dichos casos, uno puede usar `cond`:
+
+```elixir
+cond do
+  2 + 2 == 5 ->
+    "This will not be true"
+  2 * 2 == 3 ->
+    "Nor this"
+  1 + 1 == 2 ->
+    "But this will"
+end
+```
+
+Esto es equivalente a las cláusulas `else if` en muchos lenguajes imperativos. Aunque se usa con menos frecuencia en Elixir.
+
+Si todas las condiciones retornan `nil` o `false`, obtendrás una excepción de tipo `CondClauseError`. Por esta razón, puede que sea necesario agregar una condición final, igual a `true`, la cual siempre será cierta.
+
+
+```elixir
+cond do
+  2 + 2 == 5 ->
+    "This is never true"
+  2 * 2 == 3 ->
+    "Nor this"
+  true ->
+    "This is always true (equivalent to else)"
+end
+```
+
+Finalmente, nota que `cond` considera cualquier valor excepto `nil` y `false` como verdadero.
+
+```elixir
+cond do
+  hd([1, 2, 3]) ->
+    "1 is considered as true"
+end
+```
+
+## `if` y `unless`
+
+Aparte de `case` y `cond`, Elixir también provee `if/2` y `unless/2`, los cuales son útiles cuando necesitas verificar solo una condición:
+
+```elixir
+if true do
+  "This works!"
+end
+```
+
+```elixir
+unless true do
+  "This will never be seen"
+end
+```
+
+Si la condición dada a `if/2` retorna `false` o `nil`, el cuerpo dado entre `do` y `end` no será ejecutado y en cambio retornará `nil`. Lo contrario pasa con `unless/2`.
+
+Tanto `if/2` como `unless/2` soportan bloques `else`:
+
+```elixir
+if nil do
+  "This won't be seen"
+else
+  "This will"
+end
+```
+
+*Nota*: Aunque `unless/2` soporte un bloque `else`, se desaconseja su uso, suela ser más legible si transformas ese `unless/2` con bloque `else` en un `if/2` invirtiendo la condición. 
+
+Esto es una buena oportunidad para hablar del alcance de las variables en Elixir. Si cualquier variable es declarada o cambiada dentro de un `if`, `case` o algún otro constructo similar, la declaración y cambio solo será visible dentro de dicho constructo. Por ejemplo:
+
+```elixir
+x = 1
+```
+
+```elixir
+if true do
+  x = x + 1
+end
+```
+
+```elixir
+x
+```
+
+En los casos, en donde quieras cambiar un valor fuera del alcance, debes retornar el valor modificado desde `if` por ejemplo:
+In said cases, if you want to change a value, you must return the value from the `if`:
+
+```elixir
+x = 1
+```
+
+```elixir
+x = if true do
+  x = x + 1
+end
+```
+
+```elixir
+x
+```
+
+Llegados a este punto, hemos concluido la introducción a los constructos fundamentales para flujo de control en Elixir. En la próxima clase hablaremos sobre "Binarios, string, y char lists"
