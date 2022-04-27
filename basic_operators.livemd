@@ -1,0 +1,128 @@
+# Basic operators
+
+## Introduccion
+
+En la clase pasada, vimos que Elixir provee `+`, `-`, `*`, `/` como operadores aritmeticos, ademas de funciones como `div/2` y `rem/2` para division entera y conocer el remanente de la division.
+
+Elixir tambien provee `++` y `--` para manipular listas.
+
+```elixir
+[1, 2, 3] ++ [4, 5, 6]
+```
+
+```elixir
+[1, 2, 3] -- [2]
+```
+
+La concatenacion de cadenas is posible con `<>`:
+
+```elixir
+"foo" <> "bar"
+```
+
+Elixir tambien provee operadores booleanos: `or`, `and`, y `not`. Estos operadores son estrictos en el sentido que ellos esperan algo que resulte en un valor booleano (`true` o `false`) como su primer argumento:
+
+```elixir
+true and true
+```
+
+```elixir
+false or is_atom(:example)
+```
+
+Si provees un valor no booleano obtendras una excepcion:
+
+```elixir
+1 and true
+```
+
+Los operadores `or` y `and` son conocidos como _corto circuitos_. Ellos solo ejecutan el lado derecho si el lado izquierdo no es suficiente para determinar el resultado:
+
+```elixir
+false and raise("This error will never be raised")
+```
+
+```elixir
+true or raise("This error will never be raised")
+```
+
+Aparte de estos operadores booleanos, Elixir tambien provee `||`, `&&` y `!` los cuales aceptan argumentos de cualquier tipo. Para estos operadores, todos los valores excepto `false` y `nil` evaluaran a `true`:
+
+```elixir
+# or
+1 || true
+```
+
+```elixir
+# or
+false || 11
+```
+
+```elixir
+# and
+nil && 13
+```
+
+```elixir
+# and
+true && 17
+```
+
+```elixir
+# not
+!true
+```
+
+```elixir
+# not
+!1
+```
+
+```elixir
+# not
+!nil
+```
+
+Como regla de oro, usa `and`, `or` y `not` cuando esperas valores booleanos. Si cualquiera de los argumentos es un valor no booleano, entonces usa `&&`, `||` y `!`.
+
+Elixir tambien provee `==`, `!=`, `===`, `!==`, `<=`, `>=`, `<` y `>` como operadores de comparacion:
+
+```elixir
+1 == 1
+```
+
+```elixir
+1 != 2
+```
+
+```elixir
+1 < 2
+```
+
+La diferencia entre`==` y `===` es que el ultimo es mas estricto al comparar enteros con flotantes:
+
+```elixir
+1 == 1.0
+```
+
+```elixir
+1 === 1.0
+```
+
+En Elixir, tambien puedes comparar dos tipos de datos distintos:
+
+```elixir
+1 < :atom
+```
+
+La razon por la que puedes comparar distintos tipos de datos es pragmatismo. De esa manera, los algoritmos de ordenamiento no necesitan preocuparse por los diferentes tipos de datos para realizar dicha clasificacion. El orden de clasificacion, de menor a mayor, es:
+
+numeros, atomos, referencias, funciones, puertos, pid, tuplas, maps, listas, bitstring
+
+No necesitas memorizar esto, es suficiente saber que existe. Para mas informacion, revisa la pagina de referencia acerca de los [operadores](https://hexdocs.pm/elixir/operators.html).
+
+En la siguiente clase, estaremos hablando sobre coincidencia de patrones o _pattern matching_.
+
+## Agradecimientos
+
+Este tutorial es una traduccion libre del contenido presentado en la seccion [Basic Operators](https://elixir-lang.org/getting-started/basic-operators.html), el cual es parte de la guia oficial de Elixir.

@@ -371,3 +371,7 @@ tuple
 ```
 
 Nota que `put_elem/3` retornó una nueva tupla. La tupla original almacenada en la variable `tuple` no fue modificada. Así como con las listas, las tuplas son inmutables. Cada operación que modifica una tupla, retorna una nueva tupla, nunca cambiará la tupla dada como argumento.
+
+## Agradecimientos
+
+Este tutorial es una traduccion libre del contenido presentado en la seccion [Basic Types](https://elixir-lang.org/getting-started/basic-types.html), el cual es parte de la guia oficial de Elixir.

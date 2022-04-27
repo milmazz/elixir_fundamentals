@@ -212,6 +212,6 @@ length([1, [2], 3]) = 3
 
 Con esto finalizamos nuestra introduccion a la coincidencia de patrones.
 
-## Nota
+## Agradecimientos
 
 Este tutorial es una traduccion libre del contenido presentado en la seccion [Pattern Matching](https://elixir-lang.org/getting-started/pattern-matching.html), el cual es parte de la guia oficial de Elixir
