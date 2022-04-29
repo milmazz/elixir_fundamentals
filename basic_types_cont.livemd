@@ -1,0 +1,95 @@
+# Tipos básicos (cont.)
+
+## Introducción
+
+En la clase anterior comenzamos a explorar los tipos básicos que soporta Elixir. En esta clase vamos a continuar explorando otros tipos básicos, como las listas y las tuplas. Comencemos.
+
+## Listas
+
+Elixir usa corchetes para especificar una lista de valores. Los valores pueden ser de cualquier tipo:
+
+```elixir
+[1, 2, true, 3]
+```
+
+```elixir
+length([1, 2, 3])
+```
+
+Dos listas pueden ser concatenadas or substraidas usando los operadores `++/2` y `--/2` respectivamente:
+
+```elixir
+[1, 2, 3] ++ [4, 5, 6]
+```
+
+```elixir
+[1, true, 2, false, 3, true] -- [true, false]
+```
+
+Los operadores sobre listas nunca modifican la lista existente. Concatenar o remover elementos de una lista retorna una nueva lista. Por lo tanto, decimos que las estructuras de datos en Elixir son inmutables. Una ventaja de la inmutabilidad es que tiende a código más limpio. Eres libre de pasar datos entre llamadas con la garantía que ninguna mutará el dato original en memoria, solo lo transformará en otros datos.
+
+Usualmente cuando hablamos de listas, nos interesa acceder a la cabeza de la lista y su cola. La cabeza es el primer elemento de la lista y su cola es lo remanente de la lista. Podemos acceder a ellas con las funciones `hd/1` y `tl/2`. Asignemos una lista a una variable y obtengamos su cabeza y cola.
+
+```elixir
+list = [1, 2, 3]
+hd(list)
+```
+
+```elixir
+tl(list)
+```
+
+Si tratamos de obtener la cabeza o la cola de una lista vacía obtenemos un error.
+
+```elixir
+hd([])
+```
+
+```elixir
+tl([])
+```
+
+## Tuplas
+
+Elixir usa llaves para definir tuplas. Como las listas, las tuplas pueden contener cualquier tipo de dato.
+
+```elixir
+{:ok, "hello"}
+```
+
+```elixir
+tuple_size({:ok, "hello"})
+```
+
+Las tuplas almacenan elementos de manera contigua en memoria. Esto quiere decir que acceder a un elemento de la tupla por su índice u obtener el tamaño de la tupla es una operación muy rápida. El índice comienza a partir de cero.
+
+```elixir
+tuple = {:ok, "hello"}
+elem(tuple, 1)
+```
+
+```elixir
+tuple_size(tuple)
+```
+
+También es posible poner un elemento en un índice particular de la tupla con `put_elem/3`
+
+```elixir
+tuple = {:ok, "hello"}
+put_elem(tuple, 1, "world")
+```
+
+```elixir
+tuple
+```
+
+Nota que `put_elem/3` retornó una nueva tupla. La tupla original almacenada en la variable `tuple` no fue modificada. Así como con las listas, las tuplas son inmutables. Cada operación que modifica una tupla, retorna una nueva tupla, nunca cambiará la tupla dada como argumento.
+
+## Retos
+
+* Vimos que podíamos concatenar y substraer listas, ¿crees que podamos hacer lo mismo con las tuplas?, déjame en el sistema de comentarios como podrías hacerlo.
+* Utiliza la función de ayuda `h` y lee la documentación de las funciones comentadas en esta clase. 
+
+## Agradecimientos
+
+Este tutorial es una traduccion libre del contenido presentado en la seccion [Basic Types](https://elixir-lang.org/getting-started/basic-types.html), el cual es parte de la guia oficial de Elixir.
