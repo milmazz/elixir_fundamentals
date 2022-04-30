@@ -194,3 +194,7 @@ x
 ```
 
 Llegados a este punto, hemos concluido la introducción a los constructos fundamentales para flujo de control en Elixir. En la próxima clase hablaremos sobre "Binarios, string, y char lists"
+
+## Agradecimientos
+
+Este tutorial es una traduccion libre del contenido presentado en la seccion [case, cond, and if](https://elixir-lang.org/getting-started/case-cond-and-if.html), el cual es parte de la guia oficial de Elixir
