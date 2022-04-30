@@ -13,6 +13,7 @@ los próximos meses en la plataforma de [Platzi][]
 * [ ] Instalar Livebook, introducción a Livebook
 * [x] [Tipos de datos básicos](./basic_types.livemd)
 * [x] [Tipos de datos básicos (cont.)](./basic_types_cont.livemd)
+* [x] [Operadores básicos](./basic_operators.livemd)
 * [x] [case, cond, if, unless](./case_cond_and_if.livemd)
 * [x] [Pattern Matching](./pattern_matching.livemd)
 * [x] [Entendiendo las reglas del juego, primeros pasos](./hangman/02-getting_started.livemd)
