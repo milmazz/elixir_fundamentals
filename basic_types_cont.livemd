@@ -88,7 +88,7 @@ Nota que `put_elem/3` retornó una nueva tupla. La tupla original almacenada en 
 ## Retos
 
 * Vimos que podíamos concatenar y substraer listas, ¿crees que podamos hacer lo mismo con las tuplas?, déjame en el sistema de comentarios como podrías hacerlo.
-* Utiliza la función de ayuda `h` y lee la documentación de las funciones comentadas en esta clase. 
+* Utiliza la función de ayuda `h` y lee la documentación de las funciones comentadas en esta clase.
 
 ## Agradecimientos
 
