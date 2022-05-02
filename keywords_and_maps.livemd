@@ -1,0 +1,197 @@
+# Keyword lists and maps
+
+Ahora hablemos de estructuras de datos asociativas. Las estructuras de datos asociativas permiten relacionar una clave con un cierto valor. Diferentes lenguajes de programacion a estas estructuras de datos de manera distinta como diccionarios, hashes, arrays asociativos, entre otros.
+
+In Elixir, we have two main associative data structures: keyword lists y maps. It's time to learn more about them!
+
+## Keyword lists
+
+Keyword list es una estructura de datos que suele usarse para pasar opciones a funciones. Imagina que quieres dividir una cadena de caracteres que solo contiene numeros. Podemos usar `String.split/2` para ello:
+
+```elixir
+String.split("1 2 3", " ")
+```
+
+Sin embargo, que pasa si tenemos espacio adicional entre los numeros:
+
+```elixir
+String.split("1  2  3", " ")
+```
+
+Como puedes ver, ahora obtenemos cadenas vacias en los resultados. Afortunadamente, la funcion `String.split/3` permite que la opcion `trim` sea cierta o `true`:
+
+```elixir
+String.split("1  2  3", " ", [trim: true])
+```
+
+`[trim: true]` es una keyword list. Ademas, cuando una keyword list es el ultimo argumento de una funcion, podemos obviar los corchetes y escribir:
+
+```elixir
+String.split("1  2  3", " ", trim: true)
+```
+
+Tal como el nombre lo implica, las listas de palabra clave son listas. En particular, las palabras claves son tuplas de dos elementos, donde el primer elemento es la clave y es un atomo, y el segundo elemento puede ser cualquier valor. La siguiente representacion es equivalente:  
+
+```elixir
+[{:trim, true}] == [trim: true]
+```
+
+Dado que las listas de palabras claves son listas, podemos usar todas las operaciones disponibles para las listas. Por ejemplo, podemos usar `++` para agregar nuevos valores a un keyword list:
+
+```elixir
+list = [a: 1, b: 2]
+```
+
+```elixir
+list ++ [c: 3]
+```
+
+```elixir
+[a: 0] ++ list
+```
+
+You can read the value of a keyword list using the brackets syntax:
+
+```elixir
+iex> list[:a]
+1
+iex> list[:b]
+2
+```
+
+En el caso de tener claves repetidas, los valores añadidos al frente son los obtenidos:
+
+```elixir
+new_list = [a: 0] ++ list
+new_list[:a]
+```
+
+Las listas de palabras claves son importantes porque tienen caracteristicas especiales:
+
+* Las claves deben ser atomos.
+* Las claves estan ordenadas, segun lo especificado por el desarrollador.
+* Las claves pueden estar presentes en mas de una ocasion.
+
+Por ejemplo, [la libreria Ecto](https://github.com/elixir-lang/ecto) hace uso de estas funcionalidades para proveer un elegante DSL para escribir consultas a bases de datos:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+query =
+  from w in Weather,
+    where: w.prcp > 0,
+    where: w.temp < 20,
+    select: w
+```
+
+Para la manipulacion de listas de palabras claves, Elixir provee [el modulo `Keyword`](https://hexdocs.pm/elixir/Keyword.html). Recorda que la lista de palabras claves son simplemente listas, y como tal, ellas tienen las mismas caracteristicas de rendimiento lineal de las listas, lo que quiere decir que, entre mas larga la lista, tomara mas tiempo en encontrar la clave deseada; para contar el numero de elementos, entre otras operaciones. Por esta razon, las listas de palabras claves son usadas en Elixir para el pase de valores opcionales. Si necesitas almacenar muchos elementos o necesitas garantizar que una clave asocie como maximo un solo valor, entonces debemos usar maps.
+
+## Maps
+
+Siempre que necesites almacenar un par clave-valor, `map` es la estructura de datos preferida en Elixir. Un mapa es creado usando la sintaxis `%{}`:
+
+Whenever you need a key-value store, maps are the "go to" data structure in Elixir. A map is created using the `%{}` syntax:
+
+```elixir
+map = %{:a => 1, 2 => :b}
+map[:a]
+```
+
+```elixir
+map[2]
+```
+
+```elixir
+map[:c]
+```
+
+Si lo comparas con las listas de palabras claves, podemos ver desde ya dos diferencias:
+
+* Los mapas permiten cualquier valor como clave
+* Las claves en los mapas no siguen un orden especifico.
+
+En contraste con las listas de palabras claves, los mapas son bastante utiles con _pattern matching_. Cuando un mapa es usado como patron, siempre coincidira con un subconjunto del valor dado, veamos un ejemplo:
+
+```elixir
+%{} = %{:a => 1, 2 => :b}
+```
+
+```elixir
+%{:a => a} = %{:a => 1, 2 => :b}
+a
+```
+
+```elixir
+%{:c => c} = %{:a => 1, 2 => :b}
+```
+
+Tal como puedes ver, un mapa coincidira siempre y cuando las claves en el patron existan en el mapa dado. Por lo tanto, un mapa vacio coincidira con todos los mapas.
+
+Puedes usar variables cuando accedes, haces _pattern matching_ o cuando agregas una clave a un mapa:
+
+```elixir
+n = 1
+map = %{n => :one}
+```
+
+```elixir
+map[n]
+```
+
+```elixir
+%{^n => :one} = %{1 => :one, 2 => :two, 3 => :three}
+```
+
+[El modulo `Map`](https://hexdocs.pm/elixir/Map.html) provee una API o interfaz bastante similar al modulo `Keyword`, con funciones convenientes para manipular mapas.
+
+```elixir
+Map.get(%{:a => 1, 2 => :b}, :a)
+```
+
+```elixir
+Map.put(%{:a => 1, 2 => :b}, :c, 3)
+```
+
+```elixir
+Map.to_list(%{:a => 1, 2 => :b})
+```
+
+Los mapas tienen la siguiente sintaxis para actualizar el valor asociado a una clave:
+
+```elixir
+map = %{:a => 1, 2 => :b}
+%{map | 2 => "two"}
+```
+
+```elixir
+%{map | :c => 3}
+```
+
+La sintaxis anterior require que la clave exista previamente. No puede usarse para agregar nuevas claves. Por ejemplo, usandola con la clave `c` falla porque dicha clave no existe en el mapa.
+
+Cuando todas las claves en el mapa son atomos, podemos usar una sintaxis similar a la de las listas de palabras claves, lo cual es conveniente, veamos:
+
+```elixir
+map = %{a: 1, b: 2}
+```
+
+Otra interesante propiedad de los mapas es que proveen su propia sintaxis para acceder claves que son atomos:
+
+```elixir
+map = %{:a => 1, 2 => :b}
+map.a
+```
+
+```elixir
+map.c
+```
+
+Con esto concluimos la introduccion a las estructuras de datos asociativas en Elixir. Descubriras que solo con las listas de palabras claves y mapas, siempre podras abordar problemas que requiran estructuras de datos asociativas en Elixir.  
+
+## Retos
+
+* Es posible tener estructuras de datos anidadas, es decir, es posible tener mapas dentro de mapas, o listas de palabras claves dentro de mapas, entre otros. Elixir provee algunas conveniencias para manipular estructuras de datos anidades como las funciones `put_in/2`, `update_in/2` y otros macros. Revisa la documentacion del [modulo Kernel](https://hexdocs.pm/elixir/Kernel.html) y practica.
+
+## Agradecimientos
+
+Este tutorial es una traduccion libre del contenido presentado en la seccion [Keyword lists and maps](https://elixir-lang.org/getting-started/keywords-and-maps.html), el cual es parte de la guia oficial de Elixir
