@@ -7,17 +7,26 @@ los próximos meses en la plataforma de [Platzi][]
 
 ## Sesiones
 
-### Básico + Hangman game
+### Básico
 
 * [ ] Instalar Erlang y Elixir
 * [ ] Instalar Livebook, introducción a Livebook
 * [x] [Tipos de datos básicos](./basic_types.livemd)
 * [x] [Tipos de datos básicos (cont.)](./basic_types_cont.livemd)
 * [x] [Operadores básicos](./basic_operators.livemd)
+* [x] [Pattern Matching](./pattern_matching.livemd)
 * [x] [case, cond, if, unless](./case_cond_and_if.livemd)
 * [x] [Keyword lists, maps](./keywords_and_maps.livemd)
-* [x] [Modulos y funciones](./modules_and_functions.livemd)
-* [x] [Pattern Matching](./pattern_matching.livemd)
+* [x] [Módulos y funciones](./modules_and_functions.livemd)
+* [ ] [Recursión](./recursion.livemd)
+* [ ] [Enumerables, Streams](./enumerables_and_streams.livemd)
+* [ ] [Processes](./processes.livemd)
+* [ ] [IO, sistema de ficheros](./io_and_the_file_system.livemd)
+* [ ] [alias, require, import](./alias_require_and_import.livemd)
+* [ ] [Atributos de un módulo](./module_attributes.livemd)
+
+## Hangman game
+
 * [x] [Entendiendo las reglas del juego, primeros pasos](./hangman/02-getting_started.livemd)
 * [x] [Dividiendo responsabilidades](./hangman/03-single_responsability.livemd)
 * [x] [MapSet](./hangman/04-map_set.livemd)
