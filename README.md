@@ -16,6 +16,7 @@ los próximos meses en la plataforma de [Platzi][]
 * [x] [Operadores básicos](./basic_operators.livemd)
 * [x] [case, cond, if, unless](./case_cond_and_if.livemd)
 * [x] [Keyword lists, maps](./keywords_and_maps.livemd)
+* [x] [Modulos y funciones](./modules_and_functions.livemd)
 * [x] [Pattern Matching](./pattern_matching.livemd)
 * [x] [Entendiendo las reglas del juego, primeros pasos](./hangman/02-getting_started.livemd)
 * [x] [Dividiendo responsabilidades](./hangman/03-single_responsability.livemd)
