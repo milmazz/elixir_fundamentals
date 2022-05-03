@@ -1,0 +1,127 @@
+# Recursión
+
+## Ciclos vía recursión
+
+Dada la inmutabilidad, los ciclos en Elixir (como cualquier otro lenguaje de programación funcional) se escriben de manera distinta que en lenguajes imperativos.
+
+Una función es llamada de manera recursiva hasta que coincide con cierta condición que detiene dicha acción recursiva. Los datos no son mutados en dicho proceso. Considera el siguiente ejemplo que imprime una cadena un numero arbitrario de veces:
+
+```elixir
+defmodule Recursion do
+  def print_multiple_times(msg, n) when n > 0 do
+    IO.puts(msg)
+    print_multiple_times(msg, n - 1)
+  end
+
+  def print_multiple_times(_msg, 0) do
+    :ok
+  end
+end
+
+Recursion.print_multiple_times("Hello!", 3)
+```
+
+Como ya hemos visto, similar al `case`, una función puede contener múltiples cláusulas. Una cláusula particular es ejecutada cuando los argumentos pasados a la función coinciden con los patrones definidos en la cláusula y su guarda evaluada retorna verdadero:
+
+Cuando `print_multiple_times/2` es inicialmente llamada, el argumento `n` es igual a `3`.
+
+La primera cláusula tiene una guarda que dice "usa esta definición si y solo si `n` es mayor a `0`". Dado que este es el caso, imprime el `msg` y luego se llama a si misma pasando `n - 1` (`2`) como segundo argumento.
+
+Ahora ejecutamos la misma función otra vez, comenzando desde la primera cláusula. Dado que el segundo argumento, `n`, todavía es mayor a cero, imprimimos el mensaje y nos llamamos a nosotros mismos otra vez, ahora con el segundo argumento establecido en `1`. Luego imprimimos el mensaje una última vez y llamamos `print_multiple_times("Hello!", 0)`, comenzando desde la primera cláusula de nuevo.
+
+Cuando el segundo argumento es cero, la guarda `n > 0` evalúa a falso, y la primera cláusula de la función no se ejecutará. Elixir luego procede a intentar con la siguiente cláusula de la función, la cual explícitamente coincide en este caso cuando `n` es `0`. Esta cláusula, también conocida como cláusula de terminación, ignora el argumento del mensaje, pues se le asigna a una variable precedida por guión bajo, `_msg`, y finalmente retorna el átomo `:ok`.
+
+Si pasas un argumento que no coincide con ninguna cláusula, Elixir generará un error del tipo `FunctionClauseError`:
+
+```elixir
+Recursion.print_multiple_times "Hello!", -1
+```
+
+## Algoritmos `reduce` y `map`
+
+Veamos ahora como podemos usar el poder de la recursión para sumar una lista de números:
+
+```elixir
+defmodule Math do
+  def sum_list([head | tail], accumulator) do
+    sum_list(tail, head + accumulator)
+  end
+
+  def sum_list([], accumulator) do
+    accumulator
+  end
+end
+
+IO.puts Math.sum_list([1, 2, 3], 0)
+```
+
+Invocamos `sum_list` con la lista `[1, 2, 3]` y el valor inicial `0` como argumentos. Intentaremos cada cláusula hasta encontrar una que coincida acorde con los patrones definidos. En este caso, la lista `[1, 2, 3]` coincide con `[head | tail]` el cual ata `head` con `1` y `tail` con `[2, 3]`; el acumulador es establecido en cero.
+
+Luego, agregamos el tope de la lista al acumulador al hacer `head + accumulator` y llamamos `sum_list` otra vez, de manera recursiva pasamos el resto o cola de la lista como primer argumento. La cola coincidirá con el patron `[head | tail]` hasta que quede vacía, como puede verse acá:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+sum_list [1, 2, 3], 0
+sum_list [2, 3], 1
+sum_list [3], 3
+sum_list [], 6
+```
+
+Cuando la lista finalmente esté vacía, coincidirá con la cláusula final, la cual returna el valor actual del acumulador, en nuestro caso, el resultado final será `6`.
+
+El proceso de tomar una lista y _reducirlo_ a un valor es conocido como _algoritmo reduce_ y es vital para la programación funcional.
+
+Ahora, veamos, ¿qué pasa si lo que queremos es duplicar cada uno de los valores de nuestra lista?
+
+```elixir
+defmodule Math do
+  def double_each([head | tail]) do
+    [head * 2 | double_each(tail)]
+  end
+
+  def double_each([]) do
+    []
+  end
+end
+```
+
+```console
+iex math.exs
+```
+
+```elixir
+Math.double_each([1, 2, 3])
+```
+
+Acá hemos usado recursión para recorrer la lista, doblando el valor de cada elemento y retornando una nueva lista. El proceso de tomar una lista y _proyectarla_ es conocido como _map algorithm_.
+
+La recursión es una parte importante de Elixir y es usualmente usada para crear ciclos. Sin embargo, cuando programamos en Elixir es raro que utilices recursión tal como hemos visto antes para manipular listas. Seguramente te estés preguntando, ¿por qué?.
+
+El módulo [`Enum`](https://hexdocs.pm/elixir/Enum.html), el cual veremos en nuestra próxima clase, ya proporciona muchas funciones que nos facilitan la vida cuando trabajamos con listas. Por ejemplo, los ejemplos anterior pueden escribirse como:
+
+```elixir
+Enum.reduce([1, 2, 3], 0, fn(x, acc) -> x + acc end)
+```
+
+```elixir
+Enum.map([1, 2, 3], fn(x) -> x * 2 end)
+```
+
+O, si usamos el operador de captura:
+
+```elixir
+Enum.reduce([1, 2, 3], 0, &+/2)
+```
+
+```elixir
+Enum.map([1, 2, 3], &(&1 * 2))
+```
+
+Para el caso particular del `Enum.reduce/3` que tenemos antes, existe otra abstracción:
+
+```elixir
+Enum.sum([1, 2, 3])
+```
+
+Eso es todo por ahora, en la próxima clase daremos un mira más profunda a los `Enumerable` y, mientres estemos en ello, a su contraparte perezosa, `Stream`.
