@@ -1,0 +1,126 @@
+# Atributos de un módulo
+
+Los atributos de un módulo en Elixir sirven distintos propósitos, veamos algunos ellos en esta clase.
+
+## Como anotaciones
+
+Estas anotaciones por lo general almacenan información que será usada por la máquina virtual de Erlang. Por ejemplo,
+
+```elixir
+defmodule MyServer do
+  @moduledoc "My server code."
+end
+```
+
+En el ejemplo previo, estamos definiendo la documentación del módulo usando un atributo. Elixir tiene varios atributos de módulo que son reservados o tienen un objetivo específico. Algunos de ellos, los más comunmente usados son:
+
+* `@moduledoc` - provee la documentación del módulo actual.
+* `@doc` - provee la documentación para la función o macro que sigue a este atributo.
+* `@spec` - provee la especificación de tipo para la función que le sigue a este atributo.
+
+`@moduledoc` y `@doc` son por mucho los atributos de módulos más usados. Elixir le da mucha importancia a la documentación y provee muchas funciones para acceder a ella. Puedes leer acerca [de las convenciones para escribir documentación en la página oficial](https://hexdocs.pm/elixir/writing-documentation.html)
+
+Si volvemos a nuestro módulo `Math`, definido en clases previas, agreguemos algo de documentación y guardemos los cambios hechos en el fichero `math.ex`:
+
+```elixir
+defmodule Math do
+  @moduledoc """
+  Provides math-related functions.
+
+  ## Examples
+
+      iex> Math.sum(1, 2)
+      3
+
+  """
+
+  @doc """
+  Calculates the sum of two numbers.
+  """
+  def sum(a, b), do: a + b
+end
+```
+
+Elixir promueve el uso de Markdown con _heredocs_ para escribir la documentación. Heredocs son cadenas que abarcan múltiples líneas, ellas comienzan y terminan con triple comillas dobles, manteniendo el formato en el texto interno. Podemos acceder a la documentación de cualquier módulo compilado desde IEx:
+
+```console
+elixirc math.ex
+iex
+```
+
+```elixir
+iex> h Math # Access the docs for the module Math
+...
+iex> h Math.sum # Access the docs for the sum function
+...
+```
+
+Elixir también provee una herramienta llamada [ExDoc](https://github.com/elixir-lang/ex_doc), la cual es usada para generar páginas HTML a partir de la documentación en nuestro código.
+
+Puede echar un vistazo al documento [Module](https://hexdocs.pm/elixir/Module.html) si deseas ver el listado completo de los atributos soportados. Elixir también usa atributos para definir [typespecs](/getting-started/typespecs-and-behaviours.html).
+
+Esta sección cubre los atributos incluidos o reservados. Sin embargo, los atributos también pueden ser usados por desarrolladores o extendido por librerías.
+
+Llegados a este, veamos otro uso común para los atributos de un módulo, y es que también suelen usarse como constantes.
+
+## Como "constantes"
+
+Los desarrolladores en Elixir frecuentemente usan atributos de un módulo cuando desean crear un valor o constante más visible o reusable:
+
+```elixir
+defmodule MyServer do
+  @initial_state %{host: "127.0.0.1", port: 3456}
+  IO.inspect @initial_state
+end
+```
+
+Si tratas de acceder a un atributo que no ha sido definido imprimirá una advertencia:
+
+```elixir
+defmodule MyServer do
+  @unknown
+end
+```
+
+Los atributos también pueden ser leídos dentro de las funciones del módulo:
+
+```elixir
+defmodule MyServer do
+  @my_data 14
+  def first_data, do: @my_data
+  @my_data 13
+  def second_data, do: @my_data
+end
+
+MyServer.first_data
+```
+
+```elixir
+MyServer.second_data
+```
+
+Puedes llamar a funciones cuando defines un atributo de un módulo:
+
+```elixir
+defmodule MyApp.Status do
+  @service URI.parse("https://example.com")
+  def status(email) do
+    SomeHttpClient.get(@service)
+  end
+end
+```
+
+La función usada arriba será llamada en tiempo de compilación y será el valor retornado, no el llamado a la función en sí, lo que será substituido por el atributo. Entonces, esto quiere decir que el bloque anterior será efectivamente compilado tal como sigue:
+
+```elixir
+defmodule MyApp.Status do
+  def status(email) do
+    SomeHttpClient.get(%URI{
+      authority: "example.com",
+      host: "example.com",
+      port: 443,
+      scheme: "https"
+    })
+  end
+end
+```

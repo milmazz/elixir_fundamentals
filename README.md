@@ -23,7 +23,7 @@ los próximos meses en la plataforma de [Platzi][]
 * [ ] [Processes](./processes.livemd)
 * [ ] [IO, sistema de ficheros](./io_and_the_file_system.livemd)
 * [ ] [alias, require, import](./alias_require_and_import.livemd)
-* [ ] [Atributos de un módulo](./module_attributes.livemd)
+* [x] [Atributos de un módulo](./module_attributes.livemd)
 
 ## Hangman game
 
