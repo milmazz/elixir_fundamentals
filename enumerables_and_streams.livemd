@@ -1,0 +1,120 @@
+# Numerables y Flujos (Enumerables, Streams)
+
+## Numerables
+
+Elixir provee el concepto de numerables y el módulo [`Enum`](https://hexdocs.pm/elixir/Enum.html) para trabajar con ellos. Ya hemos visto dos tipos de numerables, listas y mapas.
+
+```elixir
+Enum.map([1, 2, 3], fn x -> x * 2 end)
+```
+
+```elixir
+Enum.map(%{1 => 2, 3 => 4}, fn {k, v} -> k * v end)
+```
+
+El módulo `Enum` provee un gran rango de funciones para transformar, ordenar, agrupar, filtrar y obtener ítems desde numerables. Es uno de los módulos frecuentemente usado por los desarrolladores en Elixir.
+
+Elixir también provee rangos:
+
+```elixir
+Enum.map(1..3, fn x -> x * 2 end)
+```
+
+```elixir
+Enum.reduce(1..3, 0, &+/2)
+```
+
+Las funciones en el módulo `Enum` están limitadas a, como su nombre lo indica, enumerar valores en estructuras de datos. Para operaciones específicas, como insertar o actualizar algún elemento en particular, necesitas utilizar módulos específicos para dicho tipo de dato. Por ejemplo, si quieres insertar un elemento en una cierta posición en una lista, debes usar la función `List.insert_at/3` disponible en el módulo [`List`](https://hexdocs.pm/elixir/List.html), dado que no tendría mucho sentido insertar dicho valor en un rango, por ejemplo.
+
+Decimos que las funciones en el módulo `Enum` son polimorfas porque ellas pueden trabajar con distintos tipos de datos. En particular, las funciones en este módulo pueden trabajar con cualquier tipo de dato que implemente el protocolo [`Enumerable`](https://hexdocs.pm/elixir/Enumerable.html). Discutiremos sobre Protocolos en clases posteriores; pero por ahora vamos a avanzar con un tipo específico de numerable llamado stream o flujo. 
+
+## Evaluación temprana vs. Evaluación perezosa
+
+Todas las funciones del módulo `Enum` son ansiosas o ejecutan una evaluación temprana. Muchas funciones esperan un numerable y retornan una lista:
+
+```elixir
+odd? = &(rem(&1, 2) != 0)
+Enum.filter(1..3, odd?)
+```
+
+Esto significa que cuando estamos realizando múltiples operaciones con `Enum`, cada operación va a generar una lista intermedia hasta que finalmente alcancemos el resultado:
+
+```elixir
+1..100_000 |> Enum.map(&(&1 * 3)) |> Enum.filter(odd?) |> Enum.sum()
+```
+
+El ejemplo anterior tiene una secuencia de operaciones. Comenzamos con un rango y luego multiplicamos cada elemento en dicho rango por tres. La primera operación creará y retornará una lista con `100_000` elementos. Luego filtramos la lista previa y mantenemos solo los números impares, generando una nueva lista, ahora con `50_000` elementos, y finalmente sumamos todos los elementos.
+
+## El operador pipe (|>)
+
+El símbolo `|>` usado en el ejemplo previo es conocido como el operador _pipe_, dicho operador toma la salida de la expresión a su izquierda y la pasa como primer argumento a la función que es llamada a su lado derecho. Es similar al operador `|` en Unix. Su propósito es resaltar que los datos están siendo transformados por una serie de funciones. Para ver cómo el operador `|>` contribuye a generar código más limpio, vamos a reescribir el ejemplo anterior sin usar dicho operador.
+
+```elixir
+Enum.sum(Enum.filter(Enum.map(1..100_000, &(&1 * 3)), odd?))
+```
+
+Puedes encontrar más información acerca del operador _pipe_ leyendo [su documentación](https://hexdocs.pm/elixir/Kernel.html#%7C%3E/2).
+
+## Flujos o Streams
+
+As an alternative to `Enum`, Elixir provides [the `Stream` module](https://hexdocs.pm/elixir/Stream.html) which supports lazy operations:
+
+```elixir
+iex> 1..100_000 |> Stream.map(&(&1 * 3)) |> Stream.filter(odd?) |> Enum.sum
+7500000000
+```
+
+Streams are lazy, composable enumerables.
+
+In the example above, `1..100_000 |> Stream.map(&(&1 * 3))` returns a data type, an actual stream, that represents the `map` computation over the range `1..100_000`:
+
+```elixir
+iex> 1..100_000 |> Stream.map(&(&1 * 3))
+#Stream<[enum: 1..100000, funs: [#Function<34.16982430/1 in Stream.map/2>]]>
+```
+
+Furthermore, they are composable because we can pipe many stream operations:
+
+```elixir
+iex> 1..100_000 |> Stream.map(&(&1 * 3)) |> Stream.filter(odd?)
+#Stream<[enum: 1..100000, funs: [...]]>
+```
+
+Instead of generating intermediate lists, streams build a series of computations that are invoked only when we pass the underlying stream to the `Enum` module. Streams are useful when working with large, *possibly infinite*, collections.
+
+Many functions in the `Stream` module accept any enumerable as an argument and return a stream as a result. It also provides functions for creating streams. For example, `Stream.cycle/1` can be used to create a stream that cycles a given enumerable infinitely. Be careful to not call a function like `Enum.map/2` on such streams, as they would cycle forever:
+
+```elixir
+iex> stream = Stream.cycle([1, 2, 3])
+#Function<15.16982430/2 in Stream.unfold/2>
+iex> Enum.take(stream, 10)
+[1, 2, 3, 1, 2, 3, 1, 2, 3, 1]
+```
+
+On the other hand, `Stream.unfold/2` can be used to generate values from a given initial value:
+
+```elixir
+iex> stream = Stream.unfold("hełło", &String.next_codepoint/1)
+#Function<39.75994740/2 in Stream.unfold/2>
+iex> Enum.take(stream, 3)
+["h", "e", "ł"]
+```
+
+Another interesting function is `Stream.resource/3` which can be used to wrap around resources, guaranteeing they are opened right before enumeration and closed afterwards, even in the case of failures. For example, `File.stream!/1` builds on top of `Stream.resource/3` to stream files:
+
+```elixir
+iex> stream = File.stream!("path/to/file")
+%File.Stream{
+  line_or_bytes: :line,
+  modes: [:raw, :read_ahead, :binary],
+  path: "path/to/file",
+  raw: true
+}
+iex> Enum.take(stream, 10)
+```
+
+The example above will fetch the first 10 lines of the file you have selected. This means streams can be very useful for handling large files or even slow resources like network resources.
+
+The amount of functionality in the [`Enum`](https://hexdocs.pm/elixir/Enum.html) and [`Stream`](https://hexdocs.pm/elixir/Stream.html) modules can be daunting at first, but you will get familiar with them case by case. In particular, focus on the `Enum` module first and only move to `Stream` for the particular scenarios where laziness is required, to either deal with slow resources or large, possibly infinite, collections.
+
+Next, we'll look at a feature central to Elixir, Processes, which allows us to write concurrent, parallel and distributed programs in an easy and understandable way.

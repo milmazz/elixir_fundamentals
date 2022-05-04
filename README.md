@@ -19,7 +19,7 @@ los próximos meses en la plataforma de [Platzi][]
 * [x] [Keyword lists, maps](./keywords_and_maps.livemd)
 * [x] [Módulos y funciones](./modules_and_functions.livemd)
 * [x] [Recursión](./recursion.livemd)
-* [ ] [Enumerables, Streams](./enumerables_and_streams.livemd)
+* [x] [Enumerables, Streams](./enumerables_and_streams.livemd)
 * [ ] [Processes](./processes.livemd)
 * [ ] [IO, sistema de ficheros](./io_and_the_file_system.livemd)
 * [ ] [alias, require, import](./alias_require_and_import.livemd)
