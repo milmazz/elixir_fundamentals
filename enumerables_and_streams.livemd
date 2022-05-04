@@ -26,7 +26,7 @@ Enum.reduce(1..3, 0, &+/2)
 
 Las funciones en el módulo `Enum` están limitadas a, como su nombre lo indica, enumerar valores en estructuras de datos. Para operaciones específicas, como insertar o actualizar algún elemento en particular, necesitas utilizar módulos específicos para dicho tipo de dato. Por ejemplo, si quieres insertar un elemento en una cierta posición en una lista, debes usar la función `List.insert_at/3` disponible en el módulo [`List`](https://hexdocs.pm/elixir/List.html), dado que no tendría mucho sentido insertar dicho valor en un rango, por ejemplo.
 
-Decimos que las funciones en el módulo `Enum` son polimorfas porque ellas pueden trabajar con distintos tipos de datos. En particular, las funciones en este módulo pueden trabajar con cualquier tipo de dato que implemente el protocolo [`Enumerable`](https://hexdocs.pm/elixir/Enumerable.html). Discutiremos sobre Protocolos en clases posteriores; pero por ahora vamos a avanzar con un tipo específico de numerable llamado stream o flujo. 
+Decimos que las funciones en el módulo `Enum` son polimorfas porque ellas pueden trabajar con distintos tipos de datos. En particular, las funciones en este módulo pueden trabajar con cualquier tipo de dato que implemente el protocolo [`Enumerable`](https://hexdocs.pm/elixir/Enumerable.html). Discutiremos sobre Protocolos en clases posteriores; pero por ahora vamos a avanzar con un tipo específico de numerable llamado stream o flujo.
 
 ## Evaluación temprana vs. Evaluación perezosa
 
@@ -80,7 +80,7 @@ iex> 1..100_000 |> Stream.map(&(&1 * 3)) |> Stream.filter(odd?)
 #Stream<[enum: 1..100000, funs: [...]]>
 ```
 
-Instead of generating intermediate lists, streams build a series of computations that are invoked only when we pass the underlying stream to the `Enum` module. Streams are useful when working with large, *possibly infinite*, collections.
+Instead of generating intermediate lists, streams build a series of computations that are invoked only when we pass the underlying stream to the `Enum` module. Streams are useful when working with large, _possibly infinite_, collections.
 
 Many functions in the `Stream` module accept any enumerable as an argument and return a stream as a result. It also provides functions for creating streams. For example, `Stream.cycle/1` can be used to create a stream that cycles a given enumerable infinitely. Be careful to not call a function like `Enum.map/2` on such streams, as they would cycle forever:
 
