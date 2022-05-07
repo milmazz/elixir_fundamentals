@@ -110,19 +110,27 @@ spawn(fn -> raise "oops" end)
 
 Simplemente registró un error, pero el proceso principal aún se está ejecutando. Eso es porque los procesos están aislados. Si queremos que la falla en un proceso se propague a otro, debemos vincularlos. Esto se puede hacer con `spawn_link/1`:
 
-```elixir
-self()
-```
+<!-- livebook:{"break_markdown":true} -->
+
+<!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-spawn_link(fn -> raise "oops" end)
+iex> self()
+#PID<0.41.0>
+iex> spawn_link(fn -> raise "oops" end)
+
+** (EXIT from #PID<0.41.0>) evaluator process exited with reason: an exception was raised:
+    ** (RuntimeError) oops
+        (stdlib) erl_eval.erl:668: :erl_eval.do_apply/6
+
+[error] Process #PID<0.289.0> raised an exception
+** (RuntimeError) oops
+    (stdlib) erl_eval.erl:668: :erl_eval.do_apply/6
 ```
 
-```elixir
-self()
-```
+<!-- livebook:{"break_markdown":true} -->
 
-Debido a que los procesos están vinculados, ahora vemos un mensaje que dice que el proceso principal, que es el proceso de este cuaderno, ha recibido una señal EXIT de otro proceso que hace que termine el cuaderno. Sin embargo, LiveBook detecta esta situación e inicia una nueva sesión.
+Debido a que los procesos están vinculados, ahora vemos un mensaje que dice que el proceso principal, que es el proceso de la consola, ha recibido una señal EXIT de otro proceso que hace que termine la consola. Sin embargo, IEx detecta esta situación e inicia una nueva sesión.
 
 La vinculación también se puede hacer manualmente llamando a `Process.link/1`. Te recomiendo le eches un vistazo a la documentación del módulo [`Process`](https://hexdocs.pm/elixir/Process.html) para que veas otras funcionalidades que provee.
 
