@@ -1,0 +1,133 @@
+# Procesos
+
+## Introducción
+
+En Elixir, todo el código se ejecuta dentro de procesos. Los procesos están aislados unos de otros, se ejecutan de manera concurrente y se comunican vía pase de mensajes. Los procesos no solo son la base para la concurrencia en Elixir, sino que también proporcionan los medios para construir software distribuido y tolerantes a fallos.
+
+Los procesos en Elixir no deben confundirse con los procesos del sistema operativo. Los procesos en Elixir son extremadamente livianos en términos de memoria y CPU, incluso cuando es comparado con hilos usados en muchos otros lenguajes de programación. Debido a esto, no es raro tener decenas o incluso cientos de miles de procesos ejecutándose simultáneamente.
+
+En esta clase, aprenderemos acerca de los constructos básicos para generar nuevos procesos, así como también enviar y recibir mensajes entre procesos.
+
+## Engendrar un proceso vía `spawn`
+
+El mecanismo básico para generar nuevos procesos es por medio de la función `spawn/1`:
+
+```elixir
+spawn(fn -> 1 + 2 end)
+```
+
+`spawn/1` toma una función anónima que será ejecutada en otro proceso.
+
+Observa que `spawn/1` retornan un PID o identificador de proceso. En este punto, es muy probable que el proceso que generamos esté muerto. El proceso generado ejecutará la función dada y saldrá después que se complete dicha función:
+
+```elixir
+pid = spawn(fn -> 1 + 2 end)
+Process.alive?(pid)
+```
+
+Podemos obtener el identificador del proceso actual al llamar la función `self/0`:
+We can retrieve the PID of the current process by calling `self/0`:
+
+```elixir
+self()
+```
+
+```elixir
+Process.alive?(self())
+```
+
+Los procesos se vuelven mucho más interesantes cuando podemos enviar y recibir mensajes.
+
+## `send` y `receive`
+
+Podemos enviar mensajes a un proceso con `send/2` y recibirlos con `receive/1`:
+
+```elixir
+send(self(), {:hello, "world"})
+```
+
+```elixir
+receive do
+  {:hello, msg} -> msg
+  {:world, _msg} -> "won't match"
+end
+```
+
+Cuando un mensaje es enviado a un proceso, el mensaje es almacenado en el buzón del proceso. El bloque de la función `receive/1` recorre el buzón del proceso en busca de un mensaje que coincide con cualquiera de los patrones dados. `receive/1` soporta guardas y muchas cláusulas, tal como un `case/2`.
+
+El proceso que envía el mensaje no se bloquea en `send/2`, pone el mensaje en el buzón del destinatario y continúa. En particular, un proceso puede enviarse mensajes a si mismo, que es lo que hicimos en el ejemplo anterior.
+
+Si no hay ningún mensaje en el buzón que coincida con cualquiera de los patrones dados, el proceso actual esperará hasta que llegue un mensaje coincidente. Aunque también podemos especificar un tiempo de espera:
+
+```elixir
+receive do
+  {:hello, msg} -> msg
+after
+  1_000 -> "nothing after 1s"
+end
+```
+
+Puedes usar un tiempo de espera de cero cuando crees que el mensaje que buscas ya se encuentra en el buzón.
+A timeout of 0 can be given when you already expect the message to be in the mailbox.
+
+Pongamos junto todo lo que hemos aprendido en la clase de hoy y enviemos mensajes entre procesos:
+
+```elixir
+parent = self()
+```
+
+```elixir
+spawn(fn -> send(parent, {:hello, self()}) end)
+```
+
+```elixir
+receive do
+  {:hello, pid} -> "Got hello from #{inspect(pid)}"
+end
+```
+
+La función `inspect/1` se utiliza para convertir la representación interna de una estructura de datos en una cadena o _string_, tipicamente para imprimir. Ten en cuenta que cuando se ejecuta el bloque `receive`, es posible que el proceso del remitente que hemos generado ya esté muerto, ya que su única instrucción era enviar un mensaje.
+
+Mientras estemos en la consola, te puede ser útil la función `flush/0`. Pues vacía e imprime todos los mensajes que se encuentran en el buzón.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> send(self(), :hello)
+:hello
+iex> flush()
+:hello
+:ok
+```
+
+## Enlazar o Links entre procesos
+
+La mayoría de las veces que generamos procesos en Elixir, los generamos como procesos enlazados. Antes de mostrar un ejemplo con `spawn_link/1`, veamos que pasa cuando falla un proceso iniciado con `spawn/1`:
+
+```elixir
+spawn(fn -> raise "oops" end)
+```
+
+Simplemente registró un error, pero el proceso principal aún se está ejecutando. Eso es porque los procesos están aislados. Si queremos que la falla en un proceso se propague a otro, debemos vincularlos. Esto se puede hacer con `spawn_link/1`:
+
+```elixir
+self()
+```
+
+```elixir
+spawn_link(fn -> raise "oops" end)
+```
+
+```elixir
+self()
+```
+
+Debido a que los procesos están vinculados, ahora vemos un mensaje que dice que el proceso principal, que es el proceso de este cuaderno, ha recibido una señal EXIT de otro proceso que hace que termine el cuaderno. Sin embargo, LiveBook detecta esta situación e inicia una nueva sesión.
+
+La vinculación también se puede hacer manualmente llamando a `Process.link/1`. Te recomiendo le eches un vistazo a la documentación del módulo [`Process`](https://hexdocs.pm/elixir/Process.html) para que veas otras funcionalidades que provee.
+
+Los procesos y enlaces juegan un papel importante en la construcción de sistemas tolerantes a fallas. Los procesos en Elixir están aislados y no comparten nada por omisión. Por lo tanto, una falla en un proceso nunca bloqueará ni corromperá el estado de otro proceso. Los enlaces, sin embargo, permiten que los procesos establezcan una relación en caso de falla. A menudo vinculamos nuestros procesos con supervisores que detectarán cuando un proceso muere y comenzarán un nuevo proceso en su lugar.
+
+Mientras en otros lenguajes de programación requerirían capturar y manejar excepciones, en Elixir estamos de acuerdo con dejar que los procesos fallen porque esperamos que los supervisores reinicien correctamente dichos procesos. "Fail fast" es una filosofía común cuando se escribe software en Elixir.
+
+`spawn/1` y `spawn_link/1` son las primitivas básicas para crear procesos en Elixir. Sin embargo, la mayoría de las veces vas a usar abstracciones que se construyen sobre estas primitivas. Más adelante hablaremos sobre ellas, si gustas puedes leer la documentación del módulo [Task](https://hexdocs.pm/elixir/Task.html) como un abreboca.
