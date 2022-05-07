@@ -1,5 +1,7 @@
 # Atributos de un módulo
 
+## Introducción
+
 Los atributos de un módulo en Elixir sirven distintos propósitos, veamos algunos ellos en esta clase.
 
 ## Como anotaciones
@@ -48,12 +50,18 @@ elixirc math.ex
 iex
 ```
 
+<!-- livebook:{"break_markdown":true} -->
+
+<!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 iex> h Math # Access the docs for the module Math
 ...
 iex> h Math.sum # Access the docs for the sum function
 ...
 ```
+
+<!-- livebook:{"break_markdown":true} -->
 
 Elixir también provee una herramienta llamada [ExDoc](https://github.com/elixir-lang/ex_doc), la cual es usada para generar páginas HTML a partir de la documentación en nuestro código.
 
@@ -70,7 +78,7 @@ Los desarrolladores en Elixir frecuentemente usan atributos de un módulo cuando
 ```elixir
 defmodule MyServer do
   @initial_state %{host: "127.0.0.1", port: 3456}
-  IO.inspect @initial_state
+  IO.inspect(@initial_state)
 end
 ```
 
@@ -92,11 +100,11 @@ defmodule MyServer do
   def second_data, do: @my_data
 end
 
-MyServer.first_data
+MyServer.first_data()
 ```
 
 ```elixir
-MyServer.second_data
+MyServer.second_data()
 ```
 
 Puedes llamar a funciones cuando defines un atributo de un módulo:

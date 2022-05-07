@@ -1,5 +1,7 @@
 # case, cond, if
 
+## Introducción
+
 En esta clase, aprenderemos acerca de `case`, `if`, y `cond` para el control del flujo de nuestras funciones.
 
 ## `case`
@@ -10,8 +12,10 @@ En esta clase, aprenderemos acerca de `case`, `if`, y `cond` para el control del
 case {1, 2, 3} do
   {4, 5, 6} ->
     "This clause won't match"
+
   {1, x, 3} ->
     "This clause will match and bind x to 2 in this clause"
+
   _ ->
     "This clause would match any value"
 end
@@ -34,6 +38,7 @@ Cada cláusula del `case` permite especificar condiciones adicionales via guarda
 case {1, 2, 3} do
   {1, x, 3} when x > 0 ->
     "Will match"
+
   _ ->
     "Would match, if guard condition were not satisfied"
 end
@@ -98,8 +103,10 @@ end
 cond do
   2 + 2 == 5 ->
     "This will not be true"
+
   2 * 2 == 3 ->
     "Nor this"
+
   1 + 1 == 2 ->
     "But this will"
 end
@@ -109,13 +116,14 @@ Esto es equivalente a las cláusulas `else if` en muchos lenguajes imperativos. 
 
 Si todas las condiciones retornan `nil` o `false`, obtendrás una excepción de tipo `CondClauseError`. Por esta razón, puede que sea necesario agregar una condición final, igual a `true`, la cual siempre será cierta.
 
-
 ```elixir
 cond do
   2 + 2 == 5 ->
     "This is never true"
+
   2 * 2 == 3 ->
     "Nor this"
+
   true ->
     "This is always true (equivalent to else)"
 end
@@ -158,7 +166,7 @@ else
 end
 ```
 
-*Nota*: Aunque `unless/2` soporte un bloque `else`, se desaconseja su uso, suela ser más legible si transformas ese `unless/2` con bloque `else` en un `if/2` invirtiendo la condición. 
+*Nota*: Aunque `unless/2` soporte un bloque `else`, se desaconseja su uso, suela ser más legible si transformas ese `unless/2` con bloque `else` en un `if/2` invirtiendo la condición.
 
 Esto es una buena oportunidad para hablar del alcance de las variables en Elixir. Si cualquier variable es declarada o cambiada dentro de un `if`, `case` o algún otro constructo similar, la declaración y cambio solo será visible dentro de dicho constructo. Por ejemplo:
 
@@ -184,9 +192,10 @@ x = 1
 ```
 
 ```elixir
-x = if true do
-  x = x + 1
-end
+x =
+  if true do
+    x = x + 1
+  end
 ```
 
 ```elixir

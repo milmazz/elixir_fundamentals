@@ -1,5 +1,7 @@
 # Keyword lists and maps
 
+## Section
+
 Ahora hablemos de estructuras de datos asociativas. Las estructuras de datos asociativas permiten relacionar una clave con un cierto valor. Diferentes lenguajes de programacion a estas estructuras de datos de manera distinta como diccionarios, hashes, arrays asociativos, entre otros.
 
 In Elixir, we have two main associative data structures: keyword lists y maps. It's time to learn more about them!
@@ -21,7 +23,7 @@ String.split("1  2  3", " ")
 Como puedes ver, ahora obtenemos cadenas vacias en los resultados. Afortunadamente, la funcion `String.split/3` permite que la opcion `trim` sea cierta o `true`:
 
 ```elixir
-String.split("1  2  3", " ", [trim: true])
+String.split("1  2  3", " ", trim: true)
 ```
 
 `[trim: true]` es una keyword list. Ademas, cuando una keyword list es el ultimo argumento de una funcion, podemos obviar los corchetes y escribir:
@@ -30,7 +32,7 @@ String.split("1  2  3", " ", [trim: true])
 String.split("1  2  3", " ", trim: true)
 ```
 
-Tal como el nombre lo implica, las listas de palabra clave son listas. En particular, las palabras claves son tuplas de dos elementos, donde el primer elemento es la clave y es un atomo, y el segundo elemento puede ser cualquier valor. La siguiente representacion es equivalente:  
+Tal como el nombre lo implica, las listas de palabra clave son listas. En particular, las palabras claves son tuplas de dos elementos, donde el primer elemento es la clave y es un atomo, y el segundo elemento puede ser cualquier valor. La siguiente representacion es equivalente:
 
 ```elixir
 [{:trim, true}] == [trim: true]
@@ -53,10 +55,8 @@ list ++ [c: 3]
 You can read the value of a keyword list using the brackets syntax:
 
 ```elixir
-iex> list[:a]
-1
-iex> list[:b]
-2
+IO.inspect(list[:a])
+IO.inspect(list[:b])
 ```
 
 En el caso de tener claves repetidas, los valores añadidos al frente son los obtenidos:
@@ -186,7 +186,7 @@ map.a
 map.c
 ```
 
-Con esto concluimos la introduccion a las estructuras de datos asociativas en Elixir. Descubriras que solo con las listas de palabras claves y mapas, siempre podras abordar problemas que requiran estructuras de datos asociativas en Elixir.  
+Con esto concluimos la introduccion a las estructuras de datos asociativas en Elixir. Descubriras que solo con las listas de palabras claves y mapas, siempre podras abordar problemas que requiran estructuras de datos asociativas en Elixir.
 
 ## Retos
 

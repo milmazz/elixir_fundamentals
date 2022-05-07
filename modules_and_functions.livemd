@@ -1,5 +1,7 @@
 # Modulos y funciones
 
+## Section
+
 En Elixir agrupamos varias funciones en modulos. Hasta ahora hemos usado diferentes modulos como por ejemplo [el modulo String](https://hexdocs.pm/elixir/String.html):
 
 ```elixir
@@ -59,7 +61,7 @@ defmodule Math do
   end
 end
 
-IO.puts Math.sum(1, 2)
+IO.puts(Math.sum(1, 2))
 ```
 
 Y los ejecutamos con:
@@ -85,11 +87,11 @@ defmodule Math do
   end
 end
 
-IO.puts Math.sum(1, 2)
+IO.puts(Math.sum(1, 2))
 ```
 
 ```elixir
-IO.puts Math.do_sum(1, 2)
+IO.puts(Math.do_sum(1, 2))
 ```
 
 La declaracion de funciones tambien soportan guardas y multiples clausulas. Si una funcion tiene varias clausulas, Elixir intentara ejecutar cada clausula hasta que consiga la primera que coincida. Aca podras encontrar una implementacion de una funcion que verifica si el numero dado es cero o no:
@@ -105,19 +107,19 @@ defmodule Math do
   end
 end
 
-IO.puts Math.zero?(0)
+IO.puts(Math.zero?(0))
 ```
 
 ```elixir
-IO.puts Math.zero?(1)
+IO.puts(Math.zero?(1))
 ```
 
 ```elixir
-IO.puts Math.zero?([1, 2, 3])
+IO.puts(Math.zero?([1, 2, 3]))
 ```
 
 ```elixir
-IO.puts Math.zero?(0.0)
+IO.puts(Math.zero?(0.0))
 ```
 
 NOTA: El signo de interrogacion en el nombre de la funcion `zero?` significa que retorna un valor booleano, y es otra convencion en desarrolladores Elixir, ve [Naming Conventions](https://hexdocs.pm/elixir/main/naming-conventions.html#trailing-question-mark-foo).
@@ -195,8 +197,8 @@ defmodule Concat do
   end
 end
 
-IO.puts Concat.join("Hello", "world")
-IO.puts Concat.join("Hello", "world", "_")
+IO.puts(Concat.join("Hello", "world"))
+IO.puts(Concat.join("Hello", "world", "_"))
 ```
 
 Cualquier expresion es permitida como valor por omision, pero no sera evaluada durante la definicion de la funcion. Cada vez que la funcion es invocada y cualquiera de sus valores por omision tenga que usarse, la expresion para ese valor por omision sera evaluada.
@@ -210,15 +212,15 @@ end
 ```
 
 ```elixir
-DefaultTest.dowork
+DefaultTest.dowork()
 ```
 
 ```elixir
-DefaultTest.dowork 123
+DefaultTest.dowork(123)
 ```
 
 ```elixir
-DefaultTest.dowork
+DefaultTest.dowork()
 ```
 
 Si una funcion con valores por omision tiene multiples clausulas, es requerido que crees una "funcion cabecera", una definicion de funcion pero sin cuerpo, para declarar los valores por omision:
@@ -237,9 +239,9 @@ defmodule Concat do
   end
 end
 
-IO.puts Concat.join("Hello", "world")
-IO.puts Concat.join("Hello", "world", "_")
-IO.puts Concat.join("Hello")
+IO.puts(Concat.join("Hello", "world"))
+IO.puts(Concat.join("Hello", "world", "_"))
+IO.puts(Concat.join("Hello"))
 ```
 
 NOTA: El guion bajo antes de `_sep` significa que la variable sera ignorada en esta funcion, vea [Naming Conventions](https://hexdocs.pm/elixir/main/naming-conventions.html#underscore-_foo).
@@ -249,12 +251,12 @@ Cuando uses valores por omision, debemos ser cuidadosos y evitar superponer defi
 ```elixir
 defmodule Concat do
   def join(a, b) do
-    IO.puts "***First join"
+    IO.puts("***First join")
     a <> b
   end
 
   def join(a, b, sep \\ " ") do
-    IO.puts "***Second join"
+    IO.puts("***Second join")
     a <> sep <> b
   end
 end
@@ -267,11 +269,11 @@ iex concat.ex
 ```
 
 ```elixir
-Concat.join "Hello", "world"
+Concat.join("Hello", "world")
 ```
 
 ```elixir
-Concat.join "Hello", "world", "_"
+Concat.join("Hello", "world", "_")
 ```
 
 Removiendo el argumento por omision, evitara la advertencia dada por el compilador en este caso.

@@ -34,7 +34,7 @@ Cuando el segundo argumento es cero, la guarda `n > 0` evalúa a falso, y la pri
 Si pasas un argumento que no coincide con ninguna cláusula, Elixir generará un error del tipo `FunctionClauseError`:
 
 ```elixir
-Recursion.print_multiple_times "Hello!", -1
+Recursion.print_multiple_times("Hello!", -1)
 ```
 
 ## Algoritmos `reduce` y `map`
@@ -52,7 +52,7 @@ defmodule Math do
   end
 end
 
-IO.puts Math.sum_list([1, 2, 3], 0)
+IO.puts(Math.sum_list([1, 2, 3], 0))
 ```
 
 Invocamos `sum_list` con la lista `[1, 2, 3]` y el valor inicial `0` como argumentos. Intentaremos cada cláusula hasta encontrar una que coincida acorde con los patrones definidos. En este caso, la lista `[1, 2, 3]` coincide con `[head | tail]` el cual ata `head` con `1` y `tail` con `[2, 3]`; el acumulador es establecido en cero.
@@ -101,11 +101,11 @@ La recursión es una parte importante de Elixir y es usualmente usada para crear
 El módulo [`Enum`](https://hexdocs.pm/elixir/Enum.html), el cual veremos en nuestra próxima clase, ya proporciona muchas funciones que nos facilitan la vida cuando trabajamos con listas. Por ejemplo, los ejemplos anterior pueden escribirse como:
 
 ```elixir
-Enum.reduce([1, 2, 3], 0, fn(x, acc) -> x + acc end)
+Enum.reduce([1, 2, 3], 0, fn x, acc -> x + acc end)
 ```
 
 ```elixir
-Enum.map([1, 2, 3], fn(x) -> x * 2 end)
+Enum.map([1, 2, 3], fn x -> x * 2 end)
 ```
 
 O, si usamos el operador de captura:

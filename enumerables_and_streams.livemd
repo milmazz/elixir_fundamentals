@@ -60,7 +60,7 @@ Puedes encontrar más información acerca del operador _pipe_ leyendo [su docume
 Como alternativa a `Enum`, Elixir provee el módulo [`Stream`](https://hexdocs.pm/elixir/Stream.html), el cual soporta evaluación perezosa.
 
 ```elixir
-1..100_000 |> Stream.map(&(&1 * 3)) |> Stream.filter(odd?) |> Enum.sum
+1..100_000 |> Stream.map(&(&1 * 3)) |> Stream.filter(odd?) |> Enum.sum()
 ```
 
 Como ya mencionaba, los _Streams_ son perezosos, y también una manera de componer numerables.
@@ -95,10 +95,16 @@ Enum.take(stream, 3)
 
 Otra función interesante es `Stream.resource/3`, la cual puedes usar para envolver recursos, garantizando que dichos recursos se abran justo antes de numeración y se cierren al final, incluso en caso de fallas. Por ejemlo, `File.stream!/1` se basa en `Stream.resource/3` para manejar ficheros como flujos.
 
+<!-- livebook:{"break_markdown":true} -->
+
+<!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 stream = File.stream!("path/to/file")
 Enum.take(stream, 10)
 ```
+
+<!-- livebook:{"break_markdown":true} -->
 
 El ejemplo anterior obtendrá las primeras 10 líneas del fichero que seleccionaste. Esto significa que las secuencias pueden ser muy útiles para manejar archivos grandes o incluso recursos lentos como los recursos de red.
 
