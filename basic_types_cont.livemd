@@ -2,7 +2,52 @@
 
 ## Introducción
 
-En la clase anterior comenzamos a explorar los tipos básicos que soporta Elixir. En esta clase vamos a continuar explorando otros tipos básicos, como las listas y las tuplas. Comencemos.
+En la clase anterior comenzamos a explorar los tipos básicos que soporta Elixir. En esta clase vamos a continuar explorando otros tipos básicos, como funciones anonimas, listas y las tuplas. Comencemos.
+
+## Funciones anónimas
+
+Elixir también provee funciones anónimas. Las funciones anónimas nos permiten guardar y pasar código ejecutable como si se tratara de un entero o flotante. Están delimitadas por las palabras clave `fn` y `end`.
+
+```elixir
+add = fn a, b -> a + b end
+```
+
+```elixir
+add.(1, 2)
+```
+
+```elixir
+is_function(add)
+```
+
+En el ejemplo anterior, definimos una función anónima que recibe dos argumentos, `a`y `b`, y retorna el resultado de `a + b`. Los argumentos siempre están en el lado izquierdo de `->` y el código que será ejecutado se encuentra en el lado derecho. La función anónima es guardada en la variable `add`.
+
+Podemos invocar la función anónima pasándole argumentos. Nota el punto (`.`) alrededor de la variable y los paréntesis son requeridos para invocar la función anónima. El punto asegura que no hay ambiguedad entre llamar a una función anónima que coincide con la variable `add` y la función que lleva por nombre `add/2`. Más adelante veremos como definir nuestras propias funciones con nombres. Por ahora, recuerda que Elixir hace una clara distinción entre funciones anónimas y funciones que llevan nombres.
+
+Las funciones anónimas en Elixir también son identificadas por el número de argumentos que reciben. Podemos verificar si una función recibe cierta cantidad de argumentos usando `is_function/2`.
+
+```elixir
+is_function(add, 2)
+```
+
+```elixir
+is_function(add, 1)
+```
+
+Finalmente, las funciones anónimas pueden acceder a variables que estén al alcance de la función cuando fue definida. Esto es tipicamente conocido como _clausuras_. Definamos una nueva función anónima que usa a `add`, que hemos definido previamente también como función anónima:
+
+```elixir
+double = fn a -> add.(a, a) end
+double.(2)
+```
+
+Es importante aclarar que una variable asignada dentro de una función anónima no afecta el entorno que la rodea.
+
+```elixir
+x = 42
+(fn -> x = 0 end).()
+x
+```
 
 ## Listas
 
@@ -87,6 +132,7 @@ Nota que `put_elem/3` retornó una nueva tupla. La tupla original almacenada en 
 
 ## Retos
 
+* Utiliza funciones anónimas para definir un conversor entre distintas monedas. O si lo prefieres, puedes hacer un conversor de temperatura.
 * Vimos que podíamos concatenar y substraer listas, ¿crees que podamos hacer lo mismo con las tuplas?, déjame en el sistema de comentarios como podrías hacerlo.
 * Utiliza la función de ayuda `h` y lee la documentación de las funciones comentadas en esta clase.
 

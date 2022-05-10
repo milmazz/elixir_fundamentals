@@ -246,55 +246,6 @@ El módulo [String](https://hexdocs.pm/elixir/String.html) contiene muchas funci
 String.upcase("hellö")
 ```
 
-## Funciones anónimas
-
-Elixir también provee funciones anónimas. Las funciones anónimas nos permiten guardar y pasar código ejecutable como si se tratara de un entero o flotante. Están delimitadas por las palabras clave `fn` y `end`.
-
-```elixir
-add = fn a, b -> a + b end
-```
-
-```elixir
-add.(1, 2)
-```
-
-```elixir
-is_function(add)
-```
-
-En el ejemplo anterior, definimos una función anónima que recibe dos argumentos, `a`y `b`, y retorna el resultado de `a + b`. Los argumentos siempre están en el lado izquierdo de `->` y el código que será ejecutado se encuentra en el lado derecho. La función anónima es guardada en la variable `add`.
-
-Podemos invocar la función anónima pasándole argumentos. Nota el punto (`.`) alrededor de la variable y los paréntesis son requeridos para invocar la función anónima. El punto asegura que no hay ambiguedad entre llamar a una función anónima que coincide con la variable `add` y la función que lleva por nombre `add/2`. Más adelante veremos como definir nuestras propias funciones con nombres. Por ahora, recuerda que Elixir hace una clara distinción entre funciones anónimas y funciones que llevan nombres.
-
-Las funciones anónimas en Elixir también son identificadas por el número de argumentos que reciben. Podemos verificar si una función recibe cierta cantidad de argumentos usando `is_function/2`.
-
-```elixir
-is_function(add, 2)
-```
-
-```elixir
-is_function(add, 1)
-```
-
-Finalmente, las funciones anónimas pueden acceder a variables que estén al alcance de la función cuando fue definida. Esto es tipicamente conocido como _clausuras_. Definamos una nueva función anónima que usa a `add`, que hemos definido previamente también como función anónima:
-
-```elixir
-double = fn a -> add.(a, a) end
-double.(2)
-```
-
-Es importante aclarar que una variable asignada dentro de una función anónima no afecta el entorno que la rodea.
-
-```elixir
-x = 42
-(fn -> x = 0 end).()
-x
-```
-
-## Retos
-
-* Utiliza funciones anónimas para definir un conversor entre distintas monedas. O si lo prefieres, puedes hacer un conversor de temperatura.
-
 ## Agradecimientos
 
 Este tutorial es una traducción libre del contenido presentado en la sección [Basic Types](https://elixir-lang.org/getting-started/basic-types.html), el cual es parte de la guía oficial de Elixir.
