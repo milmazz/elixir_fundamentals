@@ -10,22 +10,22 @@ los próximos meses en la plataforma de [Platzi][]
 ### Básico
 
 * [x] [Instalar Erlang y Elixir](https://elixir-lang.org/install.html)
-* [x] [Instalar Livebook, introducción a Livebook][./livebook.md]
-* [x] [Tipos de datos básicos](./basic_types.livemd)
-* [x] [Tipos de datos básicos (cont.)](./basic_types_cont.livemd)
-* [x] [Operadores básicos](./basic_operators.livemd)
-* [x] [Pattern Matching](./pattern_matching.livemd)
-* [x] [case, cond](./case_and_cond.livemd)
-* [x] [if, unless](./if_and_unless.livemd)
-* [x] [Keyword lists, maps](./keywords_and_maps.livemd)
-* [x] [Módulos](./modules.livemd)
-* [x] [Funciones](./functions.livemd)
-* [x] [Recursión](./recursion.livemd)
-* [x] [Enumerables, Streams](./enumerables_and_streams.livemd)
-* [x] [Processes](./processes.livemd)
-* [x] [IO, sistema de ficheros](./io_and_the_file_system.livemd)
-* [ ] [alias, require, import](./alias_require_and_import.livemd)
-* [x] [Atributos de un módulo](./module_attributes.livemd)
+* [x] [Instalar Livebook, introducción a Livebook][./getting_started/livebook.md]
+* [x] [Tipos de datos básicos](./getting_started/basic_types.livemd)
+* [x] [Tipos de datos básicos (cont.)](./getting_started/basic_types_cont.livemd)
+* [x] [Operadores básicos](./getting_started/basic_operators.livemd)
+* [x] [Pattern Matching](./getting_started/pattern_matching.livemd)
+* [x] [case, cond](./getting_started/case_and_cond.livemd)
+* [x] [if, unless](./getting_started/if_and_unless.livemd)
+* [x] [Keyword lists, maps](./getting_started/keywords_and_maps.livemd)
+* [x] [Módulos](./getting_started/modules.livemd)
+* [x] [Funciones](./getting_started/functions.livemd)
+* [x] [Recursión](./getting_started/recursion.livemd)
+* [x] [Enumerables, Streams](./getting_started/enumerables_and_streams.livemd)
+* [x] [Processes](./getting_started/processes.livemd)
+* [x] [IO, sistema de ficheros](./getting_started/io_and_the_file_system.livemd)
+* [ ] [alias, require, import](./getting_started/alias_require_and_import.livemd)
+* [x] [Atributos de un módulo](./getting_started/module_attributes.livemd)
 
 ## Hangman game
 
@@ -39,7 +39,6 @@ los próximos meses en la plataforma de [Platzi][]
 * [x] [Agent](./hangman/09-agent.livemd)
 * [x] [GenServer](./hangman/10-gen_server.livemd)
 * [x] [Protocols](./hangman/11-protocols.livemd)
-* [ ] ETS
 * [ ] Uso de Mix
 
 ## License

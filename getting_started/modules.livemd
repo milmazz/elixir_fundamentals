@@ -72,4 +72,4 @@ elixir math.exs
 
 Dado que usamos `elixir` en vez de `elixirc`, el modulo fue compilado y cargado en la memoria, pero ningun fichero con extension `.beam` fue escrito en disco. En los ejemplos siguientes, se recomienda escribir tu codigo en scripts y ejecutarlo como mostramos arriba.
 
-Con esto finalizamos la introducciones a los modulos en Elixir. 
+Con esto finalizamos la introducción a los módulos en Elixir.
