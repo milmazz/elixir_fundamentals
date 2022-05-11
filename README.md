@@ -10,7 +10,7 @@ los próximos meses en la plataforma de [Platzi][]
 ### Básico
 
 * [x] [Instalar Erlang y Elixir](https://elixir-lang.org/install.html)
-* [x] [Instalar Livebook, introducción a Livebook][./getting_started/livebook.md]
+* [x] [Instalar Livebook, introducción a Livebook](./getting_started/livebook.md)
 * [x] [Tipos de datos básicos](./getting_started/basic_types.livemd)
 * [x] [Tipos de datos básicos (cont.)](./getting_started/basic_types_cont.livemd)
 * [x] [Operadores básicos](./getting_started/basic_operators.livemd)
