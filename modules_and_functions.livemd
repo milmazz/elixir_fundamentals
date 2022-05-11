@@ -1,6 +1,6 @@
 # Modulos y funciones
 
-## Section
+## Introducción
 
 En Elixir agrupamos varias funciones en modulos. Hasta ahora hemos usado diferentes modulos como por ejemplo [el modulo String](https://hexdocs.pm/elixir/String.html):
 
@@ -22,7 +22,7 @@ Math.sum(1, 2)
 
 En nuestras proximas clases, nuestros ejemplos se iran haciendo mas grandes, por lo que puede ser tedioso escribirlos en la consola interactiva. Es hora que aprendamos como compilar codigo Elixir y como correr scripts en Elixir.
 
-## Compilacion
+## Compilación
 
 La mayoria del tiempo es conveniente escribir modulos en ficheros de modo que sean compilados y reusados. Asumamos que tenemos un fichero llamado `math.ex` con el siguiente contenido:
 
@@ -186,7 +186,7 @@ El `&1` representa el primer argumento pasado a la funcion. El `&(&1 + 1)` de ar
 
 Puedes leer mas como el operador de captura `&` en [la documentacion de `Kernel.SpecialForms`](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#&/1).
 
-## Argumentos por omision
+## Argumentos por omisión
 
 Las funciones con nombre en Elixir tambien soportan argumentos por omision:
 
@@ -201,7 +201,7 @@ IO.puts(Concat.join("Hello", "world"))
 IO.puts(Concat.join("Hello", "world", "_"))
 ```
 
-Cualquier expresion es permitida como valor por omision, pero no sera evaluada durante la definicion de la funcion. Cada vez que la funcion es invocada y cualquiera de sus valores por omision tenga que usarse, la expresion para ese valor por omision sera evaluada.
+Cualquier expresión es permitida como valor por omisión, pero no será evaluada durante la definición de la función. Cada vez que la función es invocada y cualquiera de sus valores por omisión tenga que usarse, la expresión para ese valor por omisión sera evaluada.
 
 ```elixir
 defmodule DefaultTest do

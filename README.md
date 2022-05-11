@@ -34,17 +34,10 @@ los próximos meses en la plataforma de [Platzi][]
 * [x] [Pruebas Unitarias](./hangman/06-unit_tests.livemd)
 * [x] [Doctests](./hangman/07-doctests.livemd)
 * [x] [Behaviour](./hangman/08-behaviour.livemd)
-
-### OTP o Avanzado
-
 * [x] [Agent](./hangman/09-agent.livemd)
 * [x] [GenServer](./hangman/10-gen_server.livemd)
 * [x] [Protocols](./hangman/11-protocols.livemd)
-* [ ] Registry
 * [ ] ETS
-* [ ] Supervisores
-* [ ] Application behaviour
-* [ ] Task
 * [ ] Uso de Mix
 
 ## License
