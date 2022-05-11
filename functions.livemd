@@ -1,78 +1,6 @@
-# Modulos y funciones
+# Funciones con nombre
 
 ## Introducción
-
-En Elixir agrupamos varias funciones en modulos. Hasta ahora hemos usado diferentes modulos como por ejemplo [el modulo String](https://hexdocs.pm/elixir/String.html):
-
-```elixir
-String.length("hello")
-```
-
-Para crear nuestros propios modulos en Elixir, usamos el macro `defmodule`. Usamos el macro `def` para definir funciones dentro de dicho modulo:
-
-```elixir
-defmodule Math do
-  def sum(a, b) do
-    a + b
-  end
-end
-
-Math.sum(1, 2)
-```
-
-En nuestras proximas clases, nuestros ejemplos se iran haciendo mas grandes, por lo que puede ser tedioso escribirlos en la consola interactiva. Es hora que aprendamos como compilar codigo Elixir y como correr scripts en Elixir.
-
-## Compilación
-
-La mayoria del tiempo es conveniente escribir modulos en ficheros de modo que sean compilados y reusados. Asumamos que tenemos un fichero llamado `math.ex` con el siguiente contenido:
-
-```elixir
-defmodule Math do
-  def sum(a, b) do
-    a + b
-  end
-end
-```
-
-Este fichero puede ser compilado usando el comando `elixirc`:
-
-```console
-elixirc math.ex
-```
-
-Esto generara un fichero nombrado `Elixir.Math.beam` que contiene el bytecode para el modulo definido. Si comenzamos `iex` de nuevo, nuestra definicion del module estara disponible (dado que `iex` se inicio desde el mismo directorio donde se encuentra el fichero que contiene el bytecode):
-
-```elixir
-Math.sum(1, 2)
-```
-
-Mientras aprendemos y por conveniencia, Elixir tambien soporta el modo script, el cual es mas flexible y no genera ningun artefacto compilados.
-
-## Modo Script
-
-En adicion a la extension `.ex`, Elixir tambien soporta la extension `.exs` para scripting. Elixir trata ambas extensiones de la misma manera, la unica diferencia es la intencion. Los archivos `.ex` estan destinados a ser compilados mientras que la extension `.exs` son para _scripting_. Es una convencion seguida por proyectos como `mix`.
-
-Por ejemplo, si creamos un fichero llamado `math.exs`
-
-```elixir
-defmodule Math do
-  def sum(a, b) do
-    a + b
-  end
-end
-
-IO.puts(Math.sum(1, 2))
-```
-
-Y los ejecutamos con:
-
-```console
-elixir math.exs
-```
-
-Dado que usamos `elixir` en vez de `elixirc`, el modulo fue compilado y cargado en la memoria, pero ningun fichero con extension `.beam` fue escrito en disco. En los ejemplos siguientes, se recomienda escribir tu codigo en scripts y ejecutarlo como mostramos arriba.
-
-## Funciones con nombre
 
 Dentro de un modulo, podemos definir funciones con `def/2` y funciones privadas con `defp/2`. Una funcion definida con `def/2` puede ser invocada por otros modulos mientras que una funcion privada solo puede ser invocada localmente.
 
@@ -278,4 +206,4 @@ Concat.join("Hello", "world", "_")
 
 Removiendo el argumento por omision, evitara la advertencia dada por el compilador en este caso.
 
-Con esto finalizamos la introducciones a los modulos en Elixir. En las siguientes clases, aprenderemos como usar funciones con nombres para recursion, exploraremos directivas en Elixir que nos permitiran importar funciones desde otros modulos y discutiremos atributos de modulos.
+En las siguientes clases, aprenderemos como usar funciones con nombres para recursion, exploraremos directivas en Elixir que nos permitiran importar funciones desde otros modulos y discutiremos atributos de modulos.
