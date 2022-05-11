@@ -9,7 +9,7 @@ los próximos meses en la plataforma de [Platzi][]
 
 ### Básico
 
-* [ ] Instalar Erlang y Elixir
+* [x] [Instalar Erlang y Elixir](https://elixir-lang.org/install.html)
 * [x] [Instalar Livebook, introducción a Livebook][./livebook.md]
 * [x] [Tipos de datos básicos](./basic_types.livemd)
 * [x] [Tipos de datos básicos (cont.)](./basic_types_cont.livemd)
@@ -21,7 +21,7 @@ los próximos meses en la plataforma de [Platzi][]
 * [x] [Recursión](./recursion.livemd)
 * [x] [Enumerables, Streams](./enumerables_and_streams.livemd)
 * [x] [Processes](./processes.livemd)
-* [ ] [IO, sistema de ficheros](./io_and_the_file_system.livemd)
+* [x] [IO, sistema de ficheros](./io_and_the_file_system.livemd)
 * [ ] [alias, require, import](./alias_require_and_import.livemd)
 * [x] [Atributos de un módulo](./module_attributes.livemd)
 

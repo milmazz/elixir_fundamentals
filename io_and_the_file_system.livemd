@@ -1,0 +1,142 @@
+# IO y el sistema de ficheros
+
+En esta clase verás una breve introducción a los mecanismos de entrada y salida, así como también tareas relacionadas con el sistema de ficheros por medio de los módulos [`IO`](https://hexdocs.pm/elixir/IO.html), [`File`](https://hexdocs.pm/elixir/File.html) y [`Path`](https://hexdocs.pm/elixir/Path.html).
+
+## Módulo `IO`
+
+El módulo [`IO`](https://hexdocs.pm/elixir/IO.html) es el mecanismo principal en Elixir para leer y escribir a la entrada o salida estándar, conocida como `:stdio`; estándar error, conocido como `:stderr`, ficheros, y otros dispositivos de entrada y salida. Veamos algunos ejemplos:
+
+<!-- livebook:{"force_markdown":true} -->
+```elixir
+iex> IO.puts("hello world")
+hello world
+:ok
+iex> IO.gets("yes or no? ")
+yes or no? yes
+"yes\n"
+```
+
+Por omisión, las funciones del módulo `IO` leen desde la entrada estándar y escriben a la salida estándar. Podemos cambiar dicho comportamiento al pasar, por ejemplo, `:stderr` como un argumento, para escribir al dispositivo estándar para errores.
+
+<!-- livebook:{"force_markdown":true} -->
+```elixir
+iex> IO.puts(:stderr, "hello world")
+hello world
+:ok
+```
+
+## El módulo `File`
+
+El módulo [`File`](https://hexdocs.pm/elixir/File.html) contiene funciones que permiten abrir ficheros como dispositivos IO o de entrada-salida. Por omisión, los ficheros son abiertos en modo binario, lo cual requiere que los desarrolladores usen las funciones `IO.binread/2` y `IO.binwrite/2` del módulo `IO`:
+
+<!-- livebook:{"force_markdown":true} -->
+```elixir
+iex> {:ok, file} = File.open("hello", [:write])
+{:ok, #PID<0.47.0>}
+iex> IO.binwrite(file, "world")
+:ok
+iex> File.close(file)
+:ok
+iex> File.read("hello")
+{:ok, "world"}
+```
+
+Un fichero también puede ser abierto con codificación `:utf8`, lo cual le indica al módulo `File` que interprete los _bytes_ que lee desde el fichero como _bytes_ codificados en UTF8.
+
+Aparte de las funciones para abrir, leer y escribir ficheros, el módulo `File` tiene muchas funciones para trabajar con el sistema de ficheros. Dichas funciones fueron llamadas siguiendo como referencia los nombres en sistemas UNIX o equivalentes. Por ejemplo, `File.rm/1` puede ser usada para remover ficheros, `File.mkdir/1` para crear directorios. `File.mkdir_p/1` para crear directorios de manera recursiva de ser necesario. Incluso encuentras funciones como `File.cp_r/2` y `File.rm_rf/1` para copiar o remover ficheros de manera recursiva.
+
+También notarás que hay funciones en el módulo `File` que tienen dos variantes: una variante "regular" y otra variante que finaliza con un signo de exclamación o _bang_ (`!`). Por ejemplo, cuando lees el fichero `"hello"` en el ejemplo anterior, se usa `File.read/1`. Alternativamente, podrías usar `File.read!/1`:
+
+<!-- livebook:{"force_markdown":true} -->
+```elixir
+iex> File.read("hello")
+{:ok, "world"}
+iex> File.read!("hello")
+"world"
+iex> File.read("unknown")
+{:error, :enoent}
+iex> File.read!("unknown")
+** (File.Error) could not read file "unknown": no such file or directory
+```
+
+Nota que la versión con `!` retorna el contenido del fichero en vez de una tupla, y si algo va mal, la función genera una excepción.
+
+La versión sin `!` es preferida cuando deseas manejar diferentes resultados por medio de _pattern matching_:
+
+<!-- livebook:{"force_markdown":true} -->
+```elixir
+case File.read(file) do
+  {:ok, body}      -> # do something with the `body`
+  {:error, reason} -> # handle the error caused by `reason`
+end
+```
+
+Sin embargo, si esperas que el fichero esté allí, la variación con el _bang_ es más útil porque emite un mensaje de error descriptivo. Evita escribir:
+
+<!-- livebook:{"force_markdown":true} -->
+```elixir
+{:ok, body} = File.read(file)
+```
+
+Dado que, en el caso de error, `File.read/1` retornará `{:error, reason}` y la coincidencia de patrones fallará. Si bien obtendras el resultado esperado, una excepción, pero el mensaje de error será acerca de una coincidencia de patrones que falló, lo cual no es preciso en este caso acerca del error que en realidad ocurrió.
+
+Por lo tanto, si no deseas manejar la salida de los errores, prefiere el uso de `File.read!/1`.
+
+## El módulo `Path`
+
+La mayoría de las funciones en el módulo `File` esperan rutas como argumentos. Regularmente, dichas rutas serán binarios o strings. El módulo [`Path`](https://hexdocs.pm/elixir/Path.html) provee algunas facilidades para trabajar con dichas rutas: 
+
+<!-- livebook:{"force_markdown":true} -->
+```elixir
+iex> Path.join("foo", "bar")
+"foo/bar"
+iex> Path.expand("~/hello")
+"/Users/jose/hello"
+```
+
+Te recomiendo usar las funciones del módulo Path cuando manejes rutas en vez de manipular las cadenas directamente dado que dicho módulo maneja diferentes sistemas operativos de manera transparente. Finalmente, ten en cuenta que Elixir automáticamente convertirá _slashes_ (`/`) en _backslashes_ (`\`) en Windows cuando realiza operaciones sobre ficheros.
+
+Con esto, hemos cubierto los principales módulos provistos por Elixir para interactuar con dispositivos de entrada-salida y el sistema de ficheros.
+
+## Processes
+
+You may have noticed that `File.open/2` returns a tuple like `{:ok, pid}`:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> {:ok, file} = File.open("hello", [:write])
+{:ok, #PID<0.47.0>}
+```
+
+That happens because the `IO` module actually works with processes (see [chapter 11](/getting-started/processes.html)). Given a file is a process, when you write to a file that has been closed, you are actually sending a message to a process which has been terminated:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> File.close(file)
+:ok
+iex> IO.write(file, "is anybody out there")
+{:error, :terminated}
+```
+
+Let's see in more detail what happens when you request `IO.write(pid, binary)`. The `IO` module sends a message to the process identified by `pid` with the desired operation. A small ad-hoc process can help us see it:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+iex> pid = spawn(fn ->
+...>  receive do: (msg -> IO.inspect msg)
+...> end)
+#PID<0.57.0>
+iex> IO.write(pid, "hello")
+{:io_request, #PID<0.41.0>, #Reference<0.0.8.91>,
+ {:put_chars, :unicode, "hello"}}
+** (ErlangError) erlang error: :terminated
+```
+
+After `IO.write/2`, we can see the request sent by the `IO` module printed out (a four-elements tuple). Soon after that, we see that it fails since the `IO` module expected some kind of result, which we did not supply.
+
+By modeling IO devices with processes, the Erlang <abbr title="Virtual Machine">VM</abbr> allows I/O messages to be routed between different nodes running Distributed Erlang or even exchange files to perform read/write operations across nodes. Neat!
+
+Esto finaliza nuestra gira por dispositivos de entrada-salida y funcionalidades relacionadas. Aprendimos sobre tres módulos [`IO`](https://hexdocs.pm/elixir/IO.html), [`File`](https://hexdocs.pm/elixir/File.html), y [`Path`](https://hexdocs.pm/elixir/Path.html).Así como también cómo la máquina virtual usa procesos de entrada-salida subyacentes.
