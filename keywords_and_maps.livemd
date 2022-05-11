@@ -1,10 +1,10 @@
 # Keyword lists and maps
 
-## Section
+## Introducción
 
 Ahora hablemos de estructuras de datos asociativas. Las estructuras de datos asociativas permiten relacionar una clave con un cierto valor. Diferentes lenguajes de programacion a estas estructuras de datos de manera distinta como diccionarios, hashes, arrays asociativos, entre otros.
 
-In Elixir, we have two main associative data structures: keyword lists y maps. It's time to learn more about them!
+En Elixir, tenemos dos estructuras de datos asociativas: Keyword list y mapas. Es tiempo que aprendas sobre ellos.
 
 ## Keyword lists
 

@@ -1,0 +1,69 @@
+# `if` y `unless`
+
+## Introducción
+
+Aparte de `case` y `cond`, Elixir también provee `if/2` y `unless/2`, los cuales son útiles cuando necesitas verificar solo una condición:
+
+```elixir
+if true do
+  "This works!"
+end
+```
+
+```elixir
+unless true do
+  "This will never be seen"
+end
+```
+
+Si la condición dada a `if/2` retorna `false` o `nil`, el cuerpo dado entre `do` y `end` no será ejecutado y en cambio retornará `nil`. Lo contrario pasa con `unless/2`.
+
+Tanto `if/2` como `unless/2` soportan bloques `else`:
+
+```elixir
+if nil do
+  "This won't be seen"
+else
+  "This will"
+end
+```
+
+*Nota*: Aunque `unless/2` soporte un bloque `else`, se desaconseja su uso, suela ser más legible si transformas ese `unless/2` con bloque `else` en un `if/2` invirtiendo la condición.
+
+Esto es una buena oportunidad para hablar del alcance de las variables en Elixir. Si cualquier variable es declarada o cambiada dentro de un `if`, `case` o algún otro constructo similar, la declaración y cambio solo será visible dentro de dicho constructo. Por ejemplo:
+
+```elixir
+x = 1
+```
+
+```elixir
+if true do
+  x = x + 1
+end
+```
+
+```elixir
+x
+```
+
+En los casos, en donde quieras cambiar un valor fuera del alcance, debes retornar el valor modificado desde `if` por ejemplo:
+In said cases, if you want to change a value, you must return the value from the `if`:
+
+```elixir
+x = 1
+```
+
+```elixir
+x =
+  if true do
+    x = x + 1
+  end
+```
+
+```elixir
+x
+```
+
+Llegados a este punto, hemos concluido la introducción a los constructos fundamentales para flujo de control en Elixir.
+
+
