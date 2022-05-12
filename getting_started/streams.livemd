@@ -1,6 +1,6 @@
 # Flujos o Streams
 
-## Introducción 
+## Introducción
 
 Como alternativa a `Enum`, Elixir provee el módulo [`Stream`](https://hexdocs.pm/elixir/Stream.html), el cual soporta evaluación perezosa.
 

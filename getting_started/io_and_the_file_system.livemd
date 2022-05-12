@@ -1,5 +1,7 @@
 # IO y el sistema de ficheros
 
+## Introducción
+
 En esta clase verás una breve introducción a los mecanismos de entrada y salida, así como también tareas relacionadas con el sistema de ficheros por medio de los módulos [`IO`](https://hexdocs.pm/elixir/IO.html), [`File`](https://hexdocs.pm/elixir/File.html) y [`Path`](https://hexdocs.pm/elixir/Path.html).
 
 ## Módulo `IO`
@@ -7,6 +9,7 @@ En esta clase verás una breve introducción a los mecanismos de entrada y salid
 El módulo [`IO`](https://hexdocs.pm/elixir/IO.html) es el mecanismo principal en Elixir para leer y escribir a la entrada o salida estándar, conocida como `:stdio`; estándar error, conocido como `:stderr`, ficheros, y otros dispositivos de entrada y salida. Veamos algunos ejemplos:
 
 <!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 iex> IO.puts("hello world")
 hello world
@@ -19,6 +22,7 @@ yes or no? yes
 Por omisión, las funciones del módulo `IO` leen desde la entrada estándar y escriben a la salida estándar. Podemos cambiar dicho comportamiento al pasar, por ejemplo, `:stderr` como un argumento, para escribir al dispositivo estándar para errores.
 
 <!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 iex> IO.puts(:stderr, "hello world")
 hello world
@@ -30,6 +34,7 @@ hello world
 El módulo [`File`](https://hexdocs.pm/elixir/File.html) contiene funciones que permiten abrir ficheros como dispositivos IO o de entrada-salida. Por omisión, los ficheros son abiertos en modo binario, lo cual requiere que los desarrolladores usen las funciones `IO.binread/2` y `IO.binwrite/2` del módulo `IO`:
 
 <!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 iex> {:ok, file} = File.open("hello", [:write])
 {:ok, #PID<0.47.0>}
@@ -48,6 +53,7 @@ Aparte de las funciones para abrir, leer y escribir ficheros, el módulo `File` 
 También notarás que hay funciones en el módulo `File` que tienen dos variantes: una variante "regular" y otra variante que finaliza con un signo de exclamación o _bang_ (`!`). Por ejemplo, cuando lees el fichero `"hello"` en el ejemplo anterior, se usa `File.read/1`. Alternativamente, podrías usar `File.read!/1`:
 
 <!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 iex> File.read("hello")
 {:ok, "world"}
@@ -64,6 +70,7 @@ Nota que la versión con `!` retorna el contenido del fichero en vez de una tupl
 La versión sin `!` es preferida cuando deseas manejar diferentes resultados por medio de _pattern matching_:
 
 <!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 case File.read(file) do
   {:ok, body}      -> # do something with the `body`
@@ -74,6 +81,7 @@ end
 Sin embargo, si esperas que el fichero esté allí, la variación con el _bang_ es más útil porque emite un mensaje de error descriptivo. Evita escribir:
 
 <!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 {:ok, body} = File.read(file)
 ```
@@ -84,9 +92,10 @@ Por lo tanto, si no deseas manejar la salida de los errores, prefiere el uso de 
 
 ## El módulo `Path`
 
-La mayoría de las funciones en el módulo `File` esperan rutas como argumentos. Regularmente, dichas rutas serán binarios o strings. El módulo [`Path`](https://hexdocs.pm/elixir/Path.html) provee algunas facilidades para trabajar con dichas rutas: 
+La mayoría de las funciones en el módulo `File` esperan rutas como argumentos. Regularmente, dichas rutas serán binarios o strings. El módulo [`Path`](https://hexdocs.pm/elixir/Path.html) provee algunas facilidades para trabajar con dichas rutas:
 
 <!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 iex> Path.join("foo", "bar")
 "foo/bar"
