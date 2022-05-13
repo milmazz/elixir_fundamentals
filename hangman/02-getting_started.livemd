@@ -60,7 +60,7 @@ end
 {word, state} = Hangman.start_game()
 ```
 
-Nota que la salida muestar ahora la palabra enmascarada tal como pide el juego, no te preocupes por el estado como mencionamos previamente.
+Nota que la salida muestra ahora la palabra enmascarada tal como pide el juego, no te preocupes por el estado como mencionamos previamente.
 Definamos ahora una función que facilite al usuario ingresar una letra para tratar de adivinar la palabra.
 
 ```elixir
