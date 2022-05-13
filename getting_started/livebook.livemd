@@ -1,5 +1,7 @@
 # LiveBook
 
+## Introducción
+
 En la clase pasada vimos como instalar Erlang y Elixir localmente. En esta
 ocasión hablaremos e instalaremos [LiveBook](https://livebook.dev). Pero, ¿Qué es LiveBook?
 

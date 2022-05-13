@@ -1,0 +1,57 @@
+# Fundamentos de Elixir
+
+## Introducción
+
+El material que encontrarás en este repositorio contendrá la serie de recursos,
+tanto cuadernos [Livebook][] como código fuente que será empleado en el curso
+de _Fundamentos de Programación Funcional con Elixir_ que estará disponible en
+los próximos meses en la plataforma de [Platzi][]
+
+## Básico
+
+* [Instalar Erlang y Elixir](https://elixir-lang.org/install.html)
+* [Instalar Livebook, introducción a Livebook](./getting_started/livebook.livemd)
+* [Tipos de datos básicos](./getting_started/basic_types.livemd)
+* [Tipos de datos básicos (cont.)](./getting_started/basic_types_cont.livemd)
+* [Operadores básicos](./getting_started/basic_operators.livemd)
+* [Pattern Matching](./getting_started/pattern_matching.livemd)
+* [case, cond](./getting_started/case_and_cond.livemd)
+* [if, unless](./getting_started/if_and_unless.livemd)
+* [Keyword lists, maps](./getting_started/keywords_and_maps.livemd)
+* [Módulos](./getting_started/modules.livemd)
+* [Funciones](./getting_started/functions.livemd)
+* [Recursión](./getting_started/recursion.livemd)
+* [Enumerables](./getting_started/enumerables.livemd)
+* [Streams](./getting_started/streams.livemd)
+* [Processes](./getting_started/processes.livemd)
+* [IO, sistema de ficheros](./getting_started/io_and_the_file_system.livemd)
+* [alias, require, import](./getting_started/alias_require_and_import.livemd)
+* [Atributos de un módulo](./getting_started/module_attributes.livemd)
+
+## Hangman game
+
+* [Entendiendo las reglas del juego, primeros pasos](./hangman/02-getting_started.livemd)
+* [Dividiendo responsabilidades](./hangman/03-single_responsability.livemd)
+* [MapSet](./hangman/04-map_set.livemd)
+* [Structs](./hangman/05-structs.livemd)
+* [Pruebas Unitarias](./hangman/06-unit_tests.livemd)
+* [Doctests](./hangman/07-doctests.livemd)
+* [Behaviour](./hangman/08-behaviour.livemd)
+* [Agent](./hangman/09-agent.livemd)
+* [GenServer](./hangman/10-gen_server.livemd)
+* [Protocols](./hangman/11-protocols.livemd)
+* Uso de Mix
+
+## License
+
+Copyright (C) 2022 Milton Mazzarri
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

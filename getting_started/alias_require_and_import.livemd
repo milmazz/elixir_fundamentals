@@ -1,0 +1,178 @@
+# alias, require, import
+
+## Introducción
+
+Elixir facilita el reuso de software por medio de tres directivas: `alias`, `require`, e `import`, veamos el detalle de cada uno de ellos.
+
+## alias
+
+La directiva `alias` permite conocer de otro modo a un módulo dado.
+
+Imagina un módulo que usa una lista especializada en `Math.List`. La directiva `alias` permite referir a dicho módulo `Math.List` simplemente como `List` dentro de la definición de un módulo si haces:
+
+```elixir
+defmodule Math.List do
+end
+
+defmodule Stats do
+  alias Math.List, as: List
+  # In the remaining module definition List expands to Math.List.
+end
+```
+
+Pero, ¿qué pasa si dentro del módulo `Stats` deseas acceder al módulo original `List` que viene incluido en Elixir?, puedes acceder a dicho módulo haciendo uso del prefijo `Elixir.`, de modo tal que sería `Elixir.List`.
+
+> Nota: Todos los módulos definidos en Elixir son definidos dentro del espacio de nombres `Elixir.`, tal como `Elixir.String`. Sin embargo, por conveniencia, puedes omitir dicho espacio de nombres cuando los referencias.
+
+La directiva `alias` es frecuentemente usada para definir atajos. De hecho, si llamas `alias` sin la opción `:as` establece el alias automáticamente para que sea la última parte del nombre del módulo, por ejemplo:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+alias Math.List
+```
+
+Es lo mismo que:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+alias Math.List, as: List
+```
+
+Nota que `alias` tiene alcance léxico, lo cual te permite definir atajos dentro de funciones específicas:
+
+```elixir
+defmodule Math do
+  def plus(a, b) do
+    alias Math.List
+    # ...
+  end
+
+  def minus(a, b) do
+    # ...
+  end
+end
+```
+
+En el ejemplo anterior, dado que estamos invocando `alias` dentro de la función `plus/2`, el atajo solo será válido dentro de la función `plus/2`. `minus/2` no se verá afectada en lo más mínimo.
+
+## require
+
+Elixir provee macros como un mecanismo para meta-programación (o escribir código que genera código). Los macros son expandidos en tiempo de compilación.
+
+Las funciones públicas en los módulos son accesibles globalmente, pero si deseas usar macros, debes optar por requerir el módulo donde fueron definidos.
+
+```elixir
+Integer.is_odd(3)
+```
+
+```elixir
+require Integer
+Integer.is_odd(3)
+```
+
+En Elixir, `Integer.is_odd/1` es definido como un macro para que pueda usarse en guardas. Esto significa que, para invocar `Integer.is_odd/1`, necesitas primero requirir el módulo `Integer`.
+
+Nota que así como la directiva `alias`, `require` tiene alcance léxico.
+
+## import
+
+Usarás `import` siempre y cuando necesitas acceder a funciones o macros definidos en otros módulos sin usar el nombre completo. Nota que solo puedes importar funciones públicas, pues las funciones privadas nunca son accesibles desde el exterior.
+
+Por ejemplo, si quieres usar varias veces la función `duplicate/2` del módulo `List`, puedes importarla:
+
+```elixir
+import List, only: [duplicate: 2]
+duplicate(:ok, 3)
+```
+
+Importaste solo la función `duplicate` (que recibe 2 argumentos) desde `List`. Sin embargo `:only` es opcional, su uso es recomendado para evitar importar todas las funciones de un cierto módulo dado dentro del alcance actual. `:except` también puede ser dada como opción para importar todo en un módulo _exceptuando_ la lista de funciones.
+
+Nota que `import` también tiene alcance léxico. Esto significa que puedes importar macros o funciones específicas dentro de una definición de función:
+
+```elixir
+defmodule Math do
+  def some_function do
+    import List, only: [duplicate: 2]
+    duplicate(:ok, 10)
+  end
+end
+```
+
+En el ejemplo anterior, la función importada `List.duplicate/2` es solamente visible dentro de la función específica. `duplicate/2` no estará disponible en cualquier otra función en ese módulo.
+
+Es importante menciones que al importar un módulo dado, automáticamente lo estás requiriendo (`require`).
+
+Como nota final acerca de la directiva `import`, su uso generalmente se desaconseja en el lenguaje, así que cuando trabajes en tu propio código, prefiere el uso de `alias` sobre `import`.
+
+## Entendiendo los alias
+
+Llegados a este punto, seguro estarás preguntándote, ¿qué es exactamente un alias en Elixir y cómo es representado?
+
+Un alias en Elixir es un identificador que comienza con letra mayúscula, como `String`, `Keyword`, etc) el cual es convertido a un átomo en tiempo de compilación. Por ejemplo, el alias `String` es traducido por omisión al átomo `:"Elixir.String"`:
+
+```elixir
+is_atom(String)
+```
+
+```elixir
+to_string(String)
+```
+
+```elixir
+:"Elixir.String" == String
+```
+
+Los alias expanden a átomos porque en la máquina virtual de Erlang, y en consecuencia Elixir, los módulos siempre están representados por átomos.
+
+```elixir
+List.flatten([1, [2], 3])
+```
+
+```elixir
+:"Elixir.List".flatten([1, [2], 3])
+```
+
+Y este es el mecanismo que vas a usar para llamar módulos en Erlang:
+
+```elixir
+:lists.flatten([1, [2], 3])
+```
+
+## Anidamiento de módulos
+
+Ahora que sabes acerca de los alias, podemos hablar acerca del anidamiento de módulos y como funciona en Elixir. Considera el siguiente ejemplo:
+
+```elixir
+defmodule Foo do
+  defmodule Bar do
+  end
+end
+```
+
+En el ejemplo anterior se definen dos módulos: `Foo` y `Foo.Bar`. El segundo puede ser accedido como `Bar` desde `Foo` siempre y cuando tengan el mismo alcance léxico.
+
+Si, luego, el módulo `Bar` es movido fuera de la definición del módulo `Foo`, debe ser referenciado por su nombre completo `Foo.Bar` o un atajo creado con la directiva `alias`.
+
+**NOTA**: En Elixir, no tienes que definir el módulo `Foo` antes de poder definir el módulo `Foo.Bar`, porque ellos son efectivamente independientes. Lo anterior puede ser reescrito como:
+
+```elixir
+defmodule Foo.Bar do
+end
+
+defmodule Foo do
+  alias Foo.Bar
+  # Can still access it as `Bar`
+end
+```
+
+## Multi alias/import/require
+
+Es posible crear `alias`, `import` o `require` a múltiples módulos de una vez. Esto es particularmente útil cuando comienzas a crear módulos anidados, lo cual es bastante común cuando creas aplicaciones en Elixir. Por ejemplo, imagina que tienes una aplicación donde todos los módulos están anidados a partir de `MyApp`, puedes crear un atajo a los módulos `MyApp.Foo`, `MyApp.Bar`, `MyApp.Baz` de una vez si haces:
+
+```elixir
+alias MyApp.{Foo, Bar, Baz}
+```
+
+Con esto, haz finalizado la gira a las directivas que nos permiten reusar código en Elixir. Ahora pasemos a hablar de los atributos en módulos.
