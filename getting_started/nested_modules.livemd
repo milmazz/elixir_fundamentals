@@ -1,0 +1,38 @@
+# Anidamiento y multi alias/require/import
+
+## Anidamiento de módulos
+
+Ahora que sabes acerca de los alias, podemos hablar acerca del anidamiento de módulos y como funciona en Elixir. Considera el siguiente ejemplo:
+
+```elixir
+defmodule Foo do
+  defmodule Bar do
+  end
+end
+```
+
+En el ejemplo anterior se definen dos módulos: `Foo` y `Foo.Bar`. El segundo puede ser accedido como `Bar` desde `Foo` siempre y cuando tengan el mismo alcance léxico.
+
+Si, luego, el módulo `Bar` es movido fuera de la definición del módulo `Foo`, debe ser referenciado por su nombre completo `Foo.Bar` o un atajo creado con la directiva `alias`.
+
+**NOTA**: En Elixir, no tienes que definir el módulo `Foo` antes de poder definir el módulo `Foo.Bar`, porque ellos son efectivamente independientes. Lo anterior puede ser reescrito como:
+
+```elixir
+defmodule Foo.Bar do
+end
+
+defmodule Foo do
+  alias Foo.Bar
+  # Can still access it as `Bar`
+end
+```
+
+## Multi alias/import/require
+
+Es posible crear `alias`, `import` o `require` a múltiples módulos de una vez. Esto es particularmente útil cuando comienzas a crear módulos anidados, lo cual es bastante común cuando creas aplicaciones en Elixir. Por ejemplo, imagina que tienes una aplicación donde todos los módulos están anidados a partir de `MyApp`, puedes crear un atajo a los módulos `MyApp.Foo`, `MyApp.Bar`, `MyApp.Baz` de una vez si haces:
+
+```elixir
+alias MyApp.{Foo, Bar, Baz}
+```
+
+Con esto, haz finalizado la gira a las directivas que nos permiten reusar código en Elixir. Ahora pasemos a hablar de los atributos en módulos.

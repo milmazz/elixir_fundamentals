@@ -26,6 +26,7 @@ los próximos meses en la plataforma de [Platzi][]
 * [x] [Processes](./getting_started/processes.livemd)
 * [x] [IO, sistema de ficheros](./getting_started/io_and_the_file_system.livemd)
 * [x] [alias, require, import](./getting_started/alias_require_and_import.livemd)
+* [x] [Módulos anidados, multi alias/require/import](./getting_started/nested_modules.livemd)
 * [x] [Atributos de un módulo](./getting_started/module_attributes.livemd)
 
 ## Hangman game
