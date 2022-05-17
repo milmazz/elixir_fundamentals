@@ -41,7 +41,7 @@ los próximos meses en la plataforma de [Platzi][]
 * [x] [Agent](./hangman/09-agent.livemd)
 * [x] [GenServer](./hangman/10-gen_server.livemd)
 * [x] [Protocols](./hangman/11-protocols.livemd)
-* [ ] Uso de Mix
+* [x] [Uso de Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)
 
 ## License
 
