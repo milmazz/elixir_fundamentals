@@ -247,49 +247,9 @@ end)
 
 Una vez llegamos al limite de intentos permitidos, le decimos al usuario que ha perdido. Solo nos falta decirle cuando ha ganado, ¿verdad?
 
-Introduzcamos una nueva clave o _key_ en nuestro mapa para indicar si el usuario ha completado la palabra. Antes de pasar a la implementación de este _key_, necesitamos hablar brevemente sobre funciones anónimas.
+Introduzcamos una nueva clave o _key_ en nuestro mapa para indicar si el usuario ha completado la palabra.
 
-### Interludio: Funciones anónimas
-
-Las funciones anónimas es un mecanismo que representa bloques de código que podemos circular o transferir (e.g. pasarlos como argumentos a otras funciones) y ejecutarlas posteriormente.
-
-```elixir
-mult = fn a, b -> a * b end
-```
-
-Las funciones anónimas están delimitadas por las palabras reservadas `fn` y `end` y el simbolo flecha `->` es usado para separar los argumentos del cuerpo principal de la función anónima. Ahora podemos invocar la función anónima definada previamente tantas veces como querramos, la única condición es que debemos proveer dos números como entrada.
-
-```elixir
-mult.(1, 2)
-```
-
-```elixir
-mult.(3, 5)
-```
-
-Anteriormente mencionamos que podemos inyectar dichas funciones anónimas en otras funciones, veamos:
-
-```elixir
-Enum.map([1, 2, 3], fn number -> number * 2 end)
-```
-
-En el caso previo, puedes notar que `Enum.map/2` retorna una lista donde cada elemento es el resultado de invocar la función anónima sobre cada elemento de la lista original.
-
-En muchos casos, vas a ver que se usa el operador [&](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#&/1), conocido como _capture_, para crear funciones anónimas de una forma más sucinta, donde `&1`, `&2` y subsecuentes, son usados como marcadores de posición de los argumentos a dicha función, veamos esto con un ejemplo:
-
-```elixir
-double = &(&1 * 2)
-IO.inspect(double.(2))
-IO.inspect(double.(3))
-```
-
-En otras palabras, `&(&1 * 2)` es equivalente a `fn x -> x * 2 end`. Por lo tanto, nuestro `Enum.map/2` previo puede reducirse a:
-
-```elixir
-Enum.map([1, 2, 3], &(&1 * 2))
-```
-
-Una vez explicado esto, volvamos a nuestro juego.
+## Finalizando nuestro juego inicial
 
 ```elixir
 defmodule Hangman do
@@ -361,6 +321,30 @@ Enum.reduce(["h", "a", "n", "g", "m"], state, fn letter, state ->
   IO.inspect(word)
   state
 end)
+```
+
+```elixir
+{word, state} = Hangman.start_game()
+```
+
+```elixir
+{word, state} = Hangman.take_a_guess("h", state)
+```
+
+```elixir
+{word, state} = Hangman.take_a_guess("a", state)
+```
+
+```elixir
+{word, state} = Hangman.take_a_guess("n", state)
+```
+
+```elixir
+{word, state} = Hangman.take_a_guess("g", state)
+```
+
+```elixir
+{word, state} = Hangman.take_a_guess("m", state)
 ```
 
 Si bien parece que nos estamos acercando a una implementación sólida del juego, nota que estamos mezclando varias responsabilidades en un solo módulo.
