@@ -48,39 +48,48 @@ Seguramente vienes notando que para documentar módulos usamos `@moduledoc` y pa
 Los _doctests_ están especificados por una indentación de cuatro espacios seguidos de `iex>` prompt dentro de nuestra cadena de documentación. Si un comando se extiende más de una línea podemos usar `...>`, tal como lo hace `IEx`. El resultado esperado debe comenzar en la siguiente línea después de `iex>` o `...>` y termina tanto por un salto de línea o un nuevo prefijo `iex>`.
 
 ```elixir
-defmodule Hangman.GameLogic do
+defmodule Hangman do
   @moduledoc """
-  Main logic for the game
+  The famous Hangman game
   """
 
+  alias Hangman.GameLogic
   alias Hangman.State
+  alias Hangman.View
 
   @doc """
-  Returns the game state after the user takes a guess
+  Starts the game
+  """
+  def start_game do
+    word = "hangman"
+
+    word
+    |> State.new()
+    |> View.format_response()
+  end
+
+  @doc """
+  Lets the user to take a guess
 
   ## Examples
 
-      iex> state = Hangman.State.new("hangman")
-      iex> guess("a", state)
-      %Hangman.State{matches: MapSet.new(["a"]), word: "hangman", goal: MapSet.new(["a", "g", "h", "m", "n"])}
+      iex> {_word, state} = Hangman.start_game()
+      iex> Hangman.take_a_guess("a", state) |> elem(0)
+      "_a___a_"
 
   """
-  @spec guess(String.t(), State.t()) :: State.t()
-  def guess(letter, %State{} = state) do
-    %{goal: goal, matches: matches, misses: misses, limit: limit} = state
-
-    if MapSet.member?(goal, letter) do
-      matches = MapSet.put(matches, letter)
-      completed? = MapSet.equal?(matches, goal)
-      %{state | matches: matches, completed?: completed?}
-    else
-      %{state | misses: MapSet.put(misses, letter), limit: limit - 1}
-    end
+  def take_a_guess(letter, %State{limit: limit, completed?: false} = state) when limit > 0 do
+    letter
+    |> String.downcase()
+    |> GameLogic.guess(state)
+    |> View.format_response()
   end
+
+  def take_a_guess(_, state), do: View.format_response(state)
 end
 ```
 
-Luego, dentro de nuestras pruebas unitarias podemos invocar el macro `doctest(module, opts)`, dicho macro generará casos de pruebas para nuestros doctests. Por ejemplo, en nuestro caso particular sería `doctest(Hangman.GameLogic, import: true)`. Para más información acerca de este macro puedes revisar su documentación [acá](https://hexdocs.pm/ex_unit/ExUnit.DocTest.html#doctest/2).
+Luego, dentro de nuestras pruebas unitarias podemos invocar el macro `doctest(module, opts)`, dicho macro generará casos de pruebas para nuestros doctests. Por ejemplo, en nuestro caso particular sería `doctest(Hangman)`. Para más información acerca de este macro puedes revisar su documentación [acá](https://hexdocs.pm/ex_unit/ExUnit.DocTest.html#doctest/2).
 
 El objetivo de los _doctests_ no es reemplazar las pruebas unitarias, si no más bien asegurarse que nuestra documentación está actualizada. Puedes leer más acerca de _doctests_ in la documentación ofrecida para [ExUnit.DocTest](https://hexdocs.pm/ex_unit/ExUnit.DocTest.html).
 
