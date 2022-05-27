@@ -110,7 +110,35 @@ end
 
 ### Introducción a `Agent`
 
-TODO
+_Agents_ ofrecen contenedores simples alrededor de estados. Si lo que necesitas de un proceso es que almacene un estado particular, el módulo Agent es una buena opción.
+
+```elixir
+{:ok, pid} = Agent.start_link(fn -> [] end, name: :milton)
+```
+
+```elixir
+Agent.update(pid, &["eggs" | &1])
+```
+
+```elixir
+Agent.get_and_update(pid, fn state -> {state, ["bacon" | state]} end)
+```
+
+```elixir
+Agent.get(:milton, & &1)
+```
+
+```elixir
+Agent.stop(:milton)
+```
+
+```elixir
+Agent.get(pid, & &1)
+```
+
+```elixir
+Agent.get(:milton, & &1)
+```
 
 ### Volvamos al juego
 
