@@ -224,7 +224,7 @@ El punto es que los lenguajes de programación de cierta manera afectan la forma
 Por otro lado, si lo que buscas es la posibilidad de mejorar tu salario como desarrollador, Elixir te puede ofrecer un camino para lograrlo, fijate que según [Stack Overflow Developer Survey 2021](https://insights.stackoverflow.com/survey/2021), [Elixir se encuentra los lenguajes de programación con mejor salario](https://insights.stackoverflow.com/survey/2021#section-salary-salary-and-experience-by-language), en la misma encuesta también puedes encontrar que el [porcentaje de personas que adoran trabajar con Elixir es bastante alto](https://insights.stackoverflow.com/survey/2021#section-salary-salary-and-experience-by-language).
 
 Por todo lo expuesto en este artículo, te invito para que aprendas más sobre Elixir,
-revisa nuestro curso introductorio sobre este hermoso lenguaje, también puedes revisar la [guía de inicio oficial][getting-started].
+revisa nuestro curso _Fundamentos de Programación Funcional con Elixir_, también puedes revisar la [guía de inicio oficial][getting-started].
 
 ## Referencias
 
